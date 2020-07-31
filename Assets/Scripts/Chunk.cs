@@ -28,8 +28,13 @@ public class Chunk : MonoBehaviour
         for(int y=0; y<VoxelData.chunkHeight; y++) {
             for(int x=0; x<VoxelData.chunkWidth; x++) {
                 for(int z=0; z<VoxelData.chunkWidth; z++) {
-
-                    voxelMap[x, y, z] = 0;
+                    
+                    if(y<1)
+                        voxelMap[x, y, z] = 0;
+                    else if(y == VoxelData.chunkHeight-1)
+                        voxelMap[x, y, z] = 2;
+                    else
+                        voxelMap[x, y, z] = 1;
 
                 }
             }
@@ -67,14 +72,15 @@ public class Chunk : MonoBehaviour
 
             if(!checkVoxel(pos + VoxelData.adjFaceChecks[i])) {
 
+                byte blockID = voxelMap[(int)pos.x, (int)pos.y, (int)pos.z];
+
                 vertices.Add(pos + VoxelData.voxelVert[VoxelData.voxelTriangles[i, 0]]);
                 vertices.Add(pos + VoxelData.voxelVert[VoxelData.voxelTriangles[i, 1]]);
                 vertices.Add(pos + VoxelData.voxelVert[VoxelData.voxelTriangles[i, 2]]);
                 vertices.Add(pos + VoxelData.voxelVert[VoxelData.voxelTriangles[i, 3]]);
-                uvs.Add(VoxelData.voxeluvs[0]);
-                uvs.Add(VoxelData.voxeluvs[1]);
-                uvs.Add(VoxelData.voxeluvs[2]);
-                uvs.Add(VoxelData.voxeluvs[3]);
+                
+                AddTexture(world.blockTypes[blockID].GetTextureID(i));
+
                 triangles.Add(vertIndex);
                 triangles.Add(vertIndex+1);
                 triangles.Add(vertIndex+2);
@@ -96,6 +102,22 @@ public class Chunk : MonoBehaviour
         mesh.RecalculateNormals();
 
         meshFilter.mesh = mesh;
+    }
+
+    void AddTexture(int textureID) {
+
+        float y = textureID/VoxelData.textureAtlasSizeInBlocks;
+        float x = textureID - (y * VoxelData.textureAtlasSizeInBlocks);
+
+        x *= VoxelData.NormalizedBlockTextureSize;
+        y *= VoxelData.NormalizedBlockTextureSize;
+
+        y = 1f - y - VoxelData.NormalizedBlockTextureSize;
+
+        uvs.Add(new Vector2(x, y));
+        uvs.Add(new Vector2(x, y + VoxelData.NormalizedBlockTextureSize));
+        uvs.Add(new Vector2(x + VoxelData.NormalizedBlockTextureSize, y));
+        uvs.Add(new Vector2(x + VoxelData.NormalizedBlockTextureSize, y + VoxelData.NormalizedBlockTextureSize));
     }
 
 }
