@@ -6,6 +6,7 @@ public class World : MonoBehaviour
 {
 
     public int seed;
+    public BiomeAttributes biome;
 
     public Transform player;
     public Vector3 spawnPosition;
@@ -87,10 +88,7 @@ public class World : MonoBehaviour
 
     public byte GetVoxel (Vector3 pos) {
 
-        int xPos = Mathf.FloorToInt(pos.x);
         int yPos = Mathf.FloorToInt(pos.y);
-
-        Debug.Log("Getting Voxel");
 
         /* Boundary conditions*/
         //if outside world
@@ -101,14 +99,29 @@ public class World : MonoBehaviour
             return 1;
 
         /*Basic terrain conditions*/
-        int terrainHeight = Mathf.FloorToInt(VoxelData.chunkHeight * Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 500, 0.25f));
+        int terrainHeight = Mathf.FloorToInt(biome.terrainHeight * Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 0, biome.terrainScale)) + biome.groundHeight;
+        byte voxelValue = 0;
 
-        if(yPos <= terrainHeight)
-            return 3;
-        else if(yPos > terrainHeight)
+        if (yPos == terrainHeight)
+            voxelValue = 3;
+        else if (yPos < terrainHeight && yPos > terrainHeight - 4)
+            voxelValue = 5;
+        else if (yPos > terrainHeight)
             return 0;
         else
-            return 2;
+            voxelValue = 2;
+
+        /* Second Pass for detail */
+        if (voxelValue == 2) {
+
+            foreach (Lode lode in biome.lodes) {
+
+                if (yPos > lode.minHeight && yPos < lode.maxHeight)
+                    if (Noise.Get3DPerlin(pos, lode.noiseOffset, lode.scale, lode.threshold))
+                        voxelValue = lode.blockID;
+            }
+        }
+        return voxelValue;
     }
 
     void CreateNewChunks(int x, int z) {
