@@ -24,7 +24,7 @@ public class World : MonoBehaviour
     private void Start() {
         
         Random.InitState(seed);
-        spawnPosition = new Vector3((VoxelData.worldSizeInChunks * VoxelData.chunkWidth)/2f, VoxelData.chunkHeight+2f, (VoxelData.worldSizeInChunks * VoxelData.chunkWidth)/2f);
+        spawnPosition = new Vector3((VoxelData.worldSizeInChunks * VoxelData.chunkWidth)/2f, VoxelData.chunkHeight-50f, (VoxelData.worldSizeInChunks * VoxelData.chunkWidth)/2f);
         GenerateWorld();
         playerLastChunkPos = GetChunkFromPosition(player.position);
     }
@@ -47,7 +47,6 @@ public class World : MonoBehaviour
 
         player.position = spawnPosition;
     }
-
 
     ChunkPos GetChunkFromPosition(Vector3 pos) {
 
@@ -84,6 +83,22 @@ public class World : MonoBehaviour
 
         foreach(ChunkPos c in previouslyActiveChunks)
             chunks[c.x, c.z].isActive = false;
+    }
+
+    public bool checkVoxelCollider(float _x, float _y, float _z)
+    {
+
+        int checkX = Mathf.FloorToInt(_x);
+        int checkY = Mathf.FloorToInt(_y);
+        int checkZ = Mathf.FloorToInt(_z);
+
+        int chunkX = checkX / VoxelData.chunkWidth;
+        int chunkZ = checkZ / VoxelData.chunkWidth;
+
+        checkX -= (chunkX * VoxelData.chunkWidth);
+        checkZ -= (chunkZ * VoxelData.chunkWidth);
+
+        return blockTypes[chunks[chunkX, chunkZ].voxelMap[checkX, checkY, checkZ]].isSolid;
     }
 
     public byte GetVoxel (Vector3 pos) {

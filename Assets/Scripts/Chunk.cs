@@ -9,12 +9,13 @@ public class Chunk {
     GameObject chunkObj;
     MeshRenderer meshRenderer;
     MeshFilter meshFilter;
+
     int vertIndex = 0;
     List<Vector3> vertices = new List<Vector3> ();
     List<int> triangles = new List<int> ();
     List<Vector2> uvs = new List<Vector2>();
 
-    byte[,,] voxelMap = new byte[VoxelData.chunkWidth, VoxelData.chunkHeight, VoxelData.chunkWidth];
+    public byte[,,] voxelMap = new byte[VoxelData.chunkWidth, VoxelData.chunkHeight, VoxelData.chunkWidth];
 
     World world;
 
