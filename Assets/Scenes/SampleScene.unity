@@ -773,6 +773,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isGrounded: 0
   isSprinting: 0
+  mouseSensitivity: 5
   walkSpeed: 3
   sprintSpeed: 5.5
   jumpForce: 5
