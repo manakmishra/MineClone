@@ -6,14 +6,14 @@ public static class VoxelData
 {
 
     public static readonly int chunkWidth = 16;
-    public static readonly int chunkHeight = 128;
+    public static readonly int chunkHeight = 256;
     public static readonly int worldSizeInChunks = 100;
     public static int worldSizeInVoxels {
 
         get { return worldSizeInChunks * chunkWidth; }
     } 
 
-    public static readonly int viewDistanceInChunks = 5;
+    public static readonly int viewDistanceInChunks = 16;
 
     public static readonly int textureAtlasSizeInBlocks = 4;
     

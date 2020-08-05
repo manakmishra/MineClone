@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     private Transform cam;
     private World world;
 
+    public float mouseSensitivity = 15f;
     public float walkSpeed = 3f;
     public float sprintSpeed = 5.5f;
     public float jumpForce = 5f;
@@ -23,7 +24,7 @@ public class PlayerController : MonoBehaviour
     private float mouseHorizontal;
     private float mouseVertical;
     private Vector3 velocity;
-    private float verticalMomentum = 0f;
+    private float verticalMomentum = 0;
     private bool jumpRequest;
 
     private void Start()
@@ -41,8 +42,8 @@ public class PlayerController : MonoBehaviour
         if (jumpRequest)
             JumpAction();
 
-        transform.Rotate(Vector3.up * mouseHorizontal);
-        cam.Rotate(Vector3.right * -mouseVertical);
+        transform.Rotate(Vector3.up * mouseHorizontal * mouseSensitivity);
+        cam.Rotate(Vector3.right * -mouseVertical * mouseSensitivity);
         transform.Translate(velocity, Space.World);
     }
 
@@ -74,14 +75,14 @@ public class PlayerController : MonoBehaviour
         //apply momentum
         velocity += Vector3.up * verticalMomentum * Time.fixedDeltaTime;
 
-        if ((velocity.z > 0 && front) || (velocity.z < 0 && back))
+        if ((velocity.z > 0 && Front) || (velocity.z < 0 && Back))
             velocity.z = 0;
-        if ((velocity.x > 0 && right) || (velocity.x < 0 && left))
+        if ((velocity.x > 0 && Right) || (velocity.x < 0 && Left))
             velocity.x = 0;
         if (velocity.y < 0)
-            velocity.y = checkDownSpeed(velocity.y);
+            velocity.y = CheckDownSpeed(velocity.y);
         else if (velocity.y > 0)
-            velocity.y = checkUpSpeed(velocity.y);
+            velocity.y = CheckUpSpeed(velocity.y);
     }
 
     private void GetPlayerInputs()
@@ -101,14 +102,14 @@ public class PlayerController : MonoBehaviour
             jumpRequest = true;
     }
 
-    private float checkDownSpeed(float downSpeed)
+    private float CheckDownSpeed(float downSpeed)
     {
 
         if (
-            world.checkVoxelCollider(transform.position.x - playerWidth, transform.position.y + downSpeed, transform.position.z - playerWidth) ||
-            world.checkVoxelCollider(transform.position.x + playerWidth, transform.position.y + downSpeed, transform.position.z - playerWidth) ||
-            world.checkVoxelCollider(transform.position.x + playerWidth, transform.position.y + downSpeed, transform.position.z + playerWidth) ||
-            world.checkVoxelCollider(transform.position.x - playerWidth, transform.position.y + downSpeed, transform.position.z + playerWidth)
+            world.CheckVoxelCollider(new Vector3(transform.position.x - playerWidth, transform.position.y + downSpeed, transform.position.z - playerWidth)) ||
+            world.CheckVoxelCollider(new Vector3(transform.position.x + playerWidth, transform.position.y + downSpeed, transform.position.z - playerWidth)) ||
+            world.CheckVoxelCollider(new Vector3(transform.position.x + playerWidth, transform.position.y + downSpeed, transform.position.z + playerWidth)) ||
+            world.CheckVoxelCollider(new Vector3(transform.position.x - playerWidth, transform.position.y + downSpeed, transform.position.z + playerWidth))
            )
         {
             isGrounded = true;
@@ -121,65 +122,65 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private float checkUpSpeed(float upSpeed)
+    private float CheckUpSpeed(float upSpeed)
     {
 
         if (
-            world.checkVoxelCollider(transform.position.x - playerWidth, transform.position.y + upSpeed + 1.9f, transform.position.z - playerWidth) ||
-            world.checkVoxelCollider(transform.position.x + playerWidth, transform.position.y + upSpeed + 1.9f, transform.position.z - playerWidth) ||
-            world.checkVoxelCollider(transform.position.x + playerWidth, transform.position.y + upSpeed + 1.9f, transform.position.z + playerWidth) ||
-            world.checkVoxelCollider(transform.position.x - playerWidth, transform.position.y + upSpeed + 1.9f, transform.position.z + playerWidth)
+            world.CheckVoxelCollider(new Vector3(transform.position.x - playerWidth, transform.position.y + upSpeed + 1.9f, transform.position.z - playerWidth)) ||
+            world.CheckVoxelCollider(new Vector3(transform.position.x + playerWidth, transform.position.y + upSpeed + 1.9f, transform.position.z - playerWidth)) ||
+            world.CheckVoxelCollider(new Vector3(transform.position.x + playerWidth, transform.position.y + upSpeed + 1.9f, transform.position.z + playerWidth)) ||
+            world.CheckVoxelCollider(new Vector3(transform.position.x - playerWidth, transform.position.y + upSpeed + 1.9f, transform.position.z + playerWidth))
            )
             return 0;
         else return upSpeed;
     }
 
-    public bool front
+    public bool Front
     {
         get
         {
             if (
-                world.checkVoxelCollider(transform.position.x, transform.position.y, transform.position.z + playerWidth) ||
-                world.checkVoxelCollider(transform.position.x, transform.position.y + 1f, transform.position.z + playerWidth)
+                world.CheckVoxelCollider(new Vector3(transform.position.x, transform.position.y, transform.position.z + playerWidth)) ||
+                world.CheckVoxelCollider(new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z + playerWidth))
             )
                 return true;
             else return false;
         }
     }
 
-    public bool back
+    public bool Back
     {
         get
         {
             if (
-                world.checkVoxelCollider(transform.position.x, transform.position.y, transform.position.z - playerWidth) ||
-                world.checkVoxelCollider(transform.position.x, transform.position.y + 1f, transform.position.z - playerWidth)
+                world.CheckVoxelCollider(new Vector3(transform.position.x, transform.position.y, transform.position.z - playerWidth)) ||
+                world.CheckVoxelCollider(new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z - playerWidth))
             )
                 return true;
             else return false;
         }
     }
 
-    public bool left
+    public bool Left
     {
         get
         {
             if (
-                world.checkVoxelCollider(transform.position.x - playerWidth, transform.position.y, transform.position.z) ||
-                world.checkVoxelCollider(transform.position.x - playerWidth, transform.position.y + 1f, transform.position.z)
+                world.CheckVoxelCollider(new Vector3(transform.position.x - playerWidth, transform.position.y, transform.position.z)) ||
+                world.CheckVoxelCollider(new Vector3(transform.position.x - playerWidth, transform.position.y + 1f, transform.position.z))
             )
                 return true;
             else return false;
         }
     }
 
-    public bool right
+    public bool Right
     {
         get
         {
             if (
-                world.checkVoxelCollider(transform.position.x + playerWidth, transform.position.y, transform.position.z) ||
-                world.checkVoxelCollider(transform.position.x + playerWidth, transform.position.y + 1f, transform.position.z)
+                world.CheckVoxelCollider(new Vector3(transform.position.x + playerWidth, transform.position.y, transform.position.z)) ||
+                world.CheckVoxelCollider(new Vector3(transform.position.x + playerWidth, transform.position.y + 1f, transform.position.z))
             )
                 return true;
             else return false;
