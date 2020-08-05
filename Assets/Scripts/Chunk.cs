@@ -48,8 +48,7 @@ public class Chunk {
         chunkObj.name = "Chunk " + pos.x + ", " + pos.z;
 
         initVoxelMap();
-        genMeshData();
-        CreateMesh();
+        UpdateChunk();
     }
 
     void initVoxelMap() {
@@ -64,17 +63,30 @@ public class Chunk {
         isVoxelMapPopulated = true;
     }
 
-    void genMeshData() {
+    void UpdateChunk() {
+
+        ClearMeshData();
+
         for(int y=0; y<VoxelData.chunkHeight; y++) {
             for(int x=0; x<VoxelData.chunkWidth; x++) {
                 for(int z=0; z<VoxelData.chunkWidth; z++) {
 
                     if(world.blockTypes[voxelMap[x, y, z]].isSolid)
-                        AddtoChunk(new Vector3(x, y, z));
+                        UpdateMesh(new Vector3(x, y, z));
 
                 }
             }
         }
+        CreateMesh();
+    }
+
+    void ClearMeshData()
+    {
+
+        vertIndex = 0;
+        vertices.Clear();
+        triangles.Clear();
+        uvs.Clear();
     }
 
     public bool isActive {
@@ -91,29 +103,15 @@ public class Chunk {
         get { return chunkObj.transform.position; }
     }
 
-    bool isVoxelInChunk(int x, int y, int z) {
+    bool IsVoxelInChunk(int x, int y, int z) {
         if(x<0 || x>VoxelData.chunkWidth-1 || y<0 || y>VoxelData.chunkHeight-1 || z<0 || z>VoxelData.chunkWidth-1)
             return false;
         else
             return true;    
     }
 
-    bool CheckVoxel(Vector3 pos) {
-
-        int x = Mathf.FloorToInt(pos.x);
-        int y = Mathf.FloorToInt(pos.y);
-        int z = Mathf.FloorToInt(pos.z);
-
-        if (!isVoxelInChunk(x, y, z))
-            return world.CheckVoxelCollider(pos + position);
-        
-        return world.blockTypes[voxelMap[x, y, z]].isSolid;
-    }
-
-    public byte GetVoxelFromGlobalPosition(Vector3 pos)
+    public void EditVoxelData(Vector3 pos, byte newID)
     {
-
-        //Debug.Log("pos: " + pos.x + " " + pos.y + " " + pos.z);
 
         int checkX = Mathf.FloorToInt(pos.x);
         int checkY = Mathf.FloorToInt(pos.y);
@@ -122,12 +120,56 @@ public class Chunk {
         checkX -= Mathf.FloorToInt(chunkObj.transform.position.x);
         checkZ -= Mathf.FloorToInt(chunkObj.transform.position.z);
 
-        //Debug.Log("check: " + checkX + " " + checkY + " " + checkZ);
+        voxelMap[checkX, checkY, checkZ] = newID;
+
+        UpdateSurroundingVoxels(checkX, checkY, checkZ);
+
+        UpdateChunk();
+    }
+
+    void UpdateSurroundingVoxels(int x, int y, int z)
+    {
+        Vector3 thisVoxel = new Vector3(x, y, z);
+
+        for(int i=0; i<6; i++)
+        {
+
+            Vector3 currentVoxel = thisVoxel + VoxelData.adjFaceChecks[i];
+            if(!IsVoxelInChunk((int)currentVoxel.x, (int)currentVoxel.y, (int)currentVoxel.z)) {
+
+                world.GetChunkFromPosition(currentVoxel + position).UpdateChunk();
+            }
+        }
+    }
+
+    bool CheckVoxel(Vector3 pos) {
+
+        int x = Mathf.FloorToInt(pos.x);
+        int y = Mathf.FloorToInt(pos.y);
+        int z = Mathf.FloorToInt(pos.z);
+
+        if (!IsVoxelInChunk(x, y, z))
+            return world.CheckVoxelCollider(pos + position);
+        
+        return world.blockTypes[voxelMap[x, y, z]].isSolid;
+    }
+
+    public byte GetVoxelFromGlobalPosition(Vector3 pos)
+    {
+
+
+        int checkX = Mathf.FloorToInt(pos.x);
+        int checkY = Mathf.FloorToInt(pos.y);
+        int checkZ = Mathf.FloorToInt(pos.z);
+
+        checkX -= Mathf.FloorToInt(chunkObj.transform.position.x);
+        checkZ -= Mathf.FloorToInt(chunkObj.transform.position.z);
+
         return voxelMap[checkX, checkY, checkZ];
 
     }
 
-    void AddtoChunk(Vector3 pos) {
+    void UpdateMesh(Vector3 pos) {
         
         for(int i=0; i<6; i++) {
 

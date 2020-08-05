@@ -24,7 +24,6 @@ public class DebugScreen : MonoBehaviour
         halfWorldSizeInVoxels = VoxelData.worldSizeInVoxels / 2;
     }
 
-    // Update is called once per frame
     void Update()
     {
 
