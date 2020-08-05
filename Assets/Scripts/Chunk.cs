@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class Chunk {
@@ -106,20 +108,23 @@ public class Chunk {
             return world.CheckVoxelCollider(pos + position);
         
         return world.blockTypes[voxelMap[x, y, z]].isSolid;
-
     }
 
     public byte GetVoxelFromGlobalPosition(Vector3 pos)
     {
+
+        //Debug.Log("pos: " + pos.x + " " + pos.y + " " + pos.z);
 
         int checkX = Mathf.FloorToInt(pos.x);
         int checkY = Mathf.FloorToInt(pos.y);
         int checkZ = Mathf.FloorToInt(pos.z);
 
         checkX -= Mathf.FloorToInt(chunkObj.transform.position.x);
-        checkY -= Mathf.FloorToInt(chunkObj.transform.position.z);
+        checkZ -= Mathf.FloorToInt(chunkObj.transform.position.z);
 
+        //Debug.Log("check: " + checkX + " " + checkY + " " + checkZ);
         return voxelMap[checkX, checkY, checkZ];
+
     }
 
     void AddtoChunk(Vector3 pos) {

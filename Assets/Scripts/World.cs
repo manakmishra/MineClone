@@ -24,7 +24,7 @@ public class World : MonoBehaviour
     private bool isCreatingChunks;
 
     private void Start() {
-        
+
         Random.InitState(seed);
         spawnPosition = new Vector3((VoxelData.worldSizeInChunks * VoxelData.chunkWidth)/2f, VoxelData.chunkHeight-50f, (VoxelData.worldSizeInChunks * VoxelData.chunkWidth)/2f);
         GenerateWorld();
