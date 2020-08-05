@@ -17,13 +17,15 @@ public class World : MonoBehaviour
     Chunk[,] chunks = new Chunk[VoxelData.worldSizeInChunks, VoxelData.worldSizeInChunks]; 
 
     List<ChunkPos> renderedChunks = new List<ChunkPos>();
-    ChunkPos playerChunkPos;
+    public ChunkPos playerChunkPos;
     ChunkPos playerLastChunkPos;
 
+    public GameObject debug;
 
     private void Start() {
         
         Random.InitState(seed);
+        debug.SetActive(false);
         spawnPosition = new Vector3((VoxelData.worldSizeInChunks * VoxelData.chunkWidth)/2f, VoxelData.chunkHeight-50f, (VoxelData.worldSizeInChunks * VoxelData.chunkWidth)/2f);
         GenerateWorld();
         playerLastChunkPos = GetChunkFromPosition(player.position);
@@ -35,6 +37,9 @@ public class World : MonoBehaviour
         
         if(!playerChunkPos.Equals(playerLastChunkPos))
             CheckViewDistance();
+
+        if (Input.GetKeyDown(KeyCode.F3))
+            debug.SetActive(!debug.activeSelf);
     }
 
     void GenerateWorld() {
