@@ -15,6 +15,8 @@ public class Chunk {
     int vertIndex = 0;
     List<Vector3> vertices = new List<Vector3> ();
     List<int> triangles = new List<int> ();
+    List<int> transparentTriangles = new List<int>();
+    Material[] materials = new Material[2];
     List<Vector2> uvs = new List<Vector2>();
 
     public byte[,,] voxelMap = new byte[VoxelData.chunkWidth, VoxelData.chunkHeight, VoxelData.chunkWidth];
@@ -42,16 +44,19 @@ public class Chunk {
         meshFilter = chunkObj.AddComponent<MeshFilter>();
         meshRenderer = chunkObj.AddComponent<MeshRenderer>();
 
-        meshRenderer.material = world.material;
+        materials[0] = world.material;
+        materials[1] = world.transparentMaterial;
+        meshRenderer.materials = materials;
+
         chunkObj.transform.SetParent(world.transform);
         chunkObj.transform.position = new Vector3(pos.x * VoxelData.chunkWidth, 0f, pos.z * VoxelData.chunkWidth);
         chunkObj.name = "Chunk " + pos.x + ", " + pos.z;
 
-        initVoxelMap();
+        InitVoxelMap();
         UpdateChunk();
     }
 
-    void initVoxelMap() {
+    void InitVoxelMap() {
         for(int y=0; y<VoxelData.chunkHeight; y++) {
             for(int x=0; x<VoxelData.chunkWidth; x++) {
                 for(int z=0; z<VoxelData.chunkWidth; z++) {
@@ -149,9 +154,9 @@ public class Chunk {
         int z = Mathf.FloorToInt(pos.z);
 
         if (!IsVoxelInChunk(x, y, z))
-            return world.CheckVoxelCollider(pos + position);
+            return world.IfVoxelTransparent(pos + position);
         
-        return world.blockTypes[voxelMap[x, y, z]].isSolid;
+        return world.blockTypes[voxelMap[x, y, z]].isTransparent;
     }
 
     public byte GetVoxelFromGlobalPosition(Vector3 pos)
@@ -170,12 +175,13 @@ public class Chunk {
     }
 
     void UpdateMesh(Vector3 pos) {
-        
-        for(int i=0; i<6; i++) {
 
-            if(!CheckVoxel(pos + VoxelData.adjFaceChecks[i])) {
+        byte blockID = voxelMap[(int)pos.x, (int)pos.y, (int)pos.z];
+        bool isTransparent = world.blockTypes[blockID].isTransparent;
 
-                byte blockID = voxelMap[(int)pos.x, (int)pos.y, (int)pos.z];
+        for (int i=0; i<6; i++) {
+
+            if(CheckVoxel(pos + VoxelData.adjFaceChecks[i])) {
 
                 vertices.Add(pos + VoxelData.voxelVert[VoxelData.voxelTriangles[i, 0]]);
                 vertices.Add(pos + VoxelData.voxelVert[VoxelData.voxelTriangles[i, 1]]);
@@ -184,12 +190,23 @@ public class Chunk {
                 
                 AddTexture(world.blockTypes[blockID].GetTextureID(i));
 
-                triangles.Add(vertIndex);
-                triangles.Add(vertIndex+1);
-                triangles.Add(vertIndex+2);
-                triangles.Add(vertIndex+2);
-                triangles.Add(vertIndex+1);
-                triangles.Add(vertIndex+3);
+                if (!isTransparent)
+                {
+                    triangles.Add(vertIndex);
+                    triangles.Add(vertIndex + 1);
+                    triangles.Add(vertIndex + 2);
+                    triangles.Add(vertIndex + 2);
+                    triangles.Add(vertIndex + 1);
+                    triangles.Add(vertIndex + 3);
+                } else
+                {
+                    transparentTriangles.Add(vertIndex);
+                    transparentTriangles.Add(vertIndex + 1);
+                    transparentTriangles.Add(vertIndex + 2);
+                    transparentTriangles.Add(vertIndex + 2);
+                    transparentTriangles.Add(vertIndex + 1);
+                    transparentTriangles.Add(vertIndex + 3);
+                }
                 vertIndex+=4;
             }
         }
@@ -199,7 +216,11 @@ public class Chunk {
     {
         Mesh mesh = new Mesh();
         mesh.vertices = vertices.ToArray();
-        mesh.triangles = triangles.ToArray();
+           
+        mesh.subMeshCount = 2;
+        mesh.SetTriangles(triangles.ToArray(), 0);
+        mesh.SetTriangles(transparentTriangles.ToArray(), 1);
+
         mesh.uv = uvs.ToArray();
 
         mesh.RecalculateNormals();

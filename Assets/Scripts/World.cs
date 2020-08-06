@@ -12,6 +12,7 @@ public class World : MonoBehaviour
     public Vector3 spawnPosition;
 
     public Material material;
+    public Material transparentMaterial;
     public BlockType[] blockTypes;
 
     Chunk[,] chunks = new Chunk[VoxelData.worldSizeInChunks, VoxelData.worldSizeInChunks];
@@ -150,6 +151,20 @@ public class World : MonoBehaviour
         return blockTypes[GetVoxel(pos)].isSolid;
     }
 
+    public bool IfVoxelTransparent(Vector3 pos)
+    {
+
+        ChunkPos thisChunk = new ChunkPos(pos);
+
+        if (!IsChunkInWorld(thisChunk) || pos.y < 0 || pos.y > VoxelData.chunkHeight)
+            return false;
+
+        if (chunks[thisChunk.x, thisChunk.z] != null && chunks[thisChunk.x, thisChunk.z].isVoxelMapPopulated)
+            return blockTypes[chunks[thisChunk.x, thisChunk.z].GetVoxelFromGlobalPosition(pos)].isTransparent;
+
+        return blockTypes[GetVoxel(pos)].isTransparent;
+    }
+
     public byte GetVoxel(Vector3 pos)
     {
 
@@ -215,6 +230,7 @@ public class BlockType
 
     public string blockName;
     public bool isSolid;
+    public bool isTransparent;
     public Sprite icon;
 
     [Header("TextureValues")]
