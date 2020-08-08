@@ -23,6 +23,8 @@ public class Chunk {
 
     World world;
 
+    public Queue<WorldVoxelMod> mods = new Queue<WorldVoxelMod>();
+
     private bool _isActive;
     public bool isVoxelMapPopulated = false;
 
@@ -68,7 +70,15 @@ public class Chunk {
         isVoxelMapPopulated = true;
     }
 
-    void UpdateChunk() {
+    public void UpdateChunk() {
+
+        while(mods.Count > 0)
+        {
+
+            WorldVoxelMod mod = mods.Dequeue();
+            Vector3 pos = mod.position -= position;
+            voxelMap[(int)pos.x, (int)pos.y, (int)pos.z] = mod.id;
+        }
 
         ClearMeshData();
 

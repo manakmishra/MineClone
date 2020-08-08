@@ -22,7 +22,11 @@ public class World : MonoBehaviour
     ChunkPos playerLastChunkPos;
 
     List<ChunkPos> chunksToBeCreated = new List<ChunkPos>();
-    private bool isCreatingChunks;
+    List<Chunk> chunksToUpdate = new List<Chunk>();
+
+    bool modsApplying = false;
+
+    Queue<WorldVoxelMod> mods = new Queue<WorldVoxelMod>();
 
     public GameObject debug;
 
@@ -43,8 +47,14 @@ public class World : MonoBehaviour
         if (!playerChunkPos.Equals(playerLastChunkPos))
             CheckViewDistance();
 
-        if (chunksToBeCreated.Count > 0 && !isCreatingChunks)
-            StartCoroutine("CreateChunks");
+        if (mods.Count > 0 && !modsApplying)
+            StartCoroutine(ApplyModifications());
+
+        if (chunksToBeCreated.Count > 0)
+            CreateChunk();
+
+        if (chunksToUpdate.Count > 0)
+            UpdateChunks();
 
         if (Input.GetKeyDown(KeyCode.F3))
             debug.SetActive(!debug.activeSelf);
@@ -62,22 +72,103 @@ public class World : MonoBehaviour
             }
         }
 
+        while(mods.Count > 0)
+        {
+
+            WorldVoxelMod mod = mods.Dequeue();
+
+            ChunkPos p = GetChunkCoordFromPosition(mod.position);
+
+            if(chunks[p.x, p.z] == null)
+            {
+
+                chunks[p.x, p.z] = new Chunk(p, this, true);
+                renderedChunks.Add(p);
+            }
+
+            chunks[p.x, p.z].mods.Enqueue(mod);
+
+            if(!chunksToUpdate.Contains(chunks[p.x, p.z])) {
+                chunksToUpdate.Add(chunks[p.x, p.z]);
+            }
+        }
+
+        for(int i=0; i<chunksToUpdate.Count; i++)
+        {
+
+            chunksToUpdate[0].UpdateChunk();
+            chunksToUpdate.RemoveAt(0);
+        }
+
         player.position = spawnPosition;
     }
 
-    IEnumerator CreateChunks()
+    void CreateChunk()
     {
 
-        isCreatingChunks = true;
+        ChunkPos p = chunksToBeCreated[0];
+        chunksToBeCreated.RemoveAt(0);
+        renderedChunks.Add(p);
+        chunks[p.x, p.z].Init();
+    }
 
-        while (chunksToBeCreated.Count > 0)
+    void UpdateChunks()
+    {
+
+        bool updated = false;
+        int index = 0;
+
+        while(!updated && index < chunksToUpdate.Count - 1)
         {
 
-            chunks[chunksToBeCreated[0].x, chunksToBeCreated[0].z].Init();
-            chunksToBeCreated.RemoveAt(0);
-            yield return null;
+            if (chunksToUpdate[index].isVoxelMapPopulated)
+            {
+
+                chunksToUpdate[index].UpdateChunk();
+                chunksToUpdate.RemoveAt(index);
+                updated = true;
+            }
+            else index++;
         }
-        isCreatingChunks = false;
+    }
+
+    IEnumerator ApplyModifications()
+    {
+
+        modsApplying = true;
+        int count = 0;
+
+        while (mods.Count > 0)
+        {
+
+            WorldVoxelMod mod = mods.Dequeue();
+
+            ChunkPos p = GetChunkCoordFromPosition(mod.position);
+
+            if (chunks[p.x, p.z] == null)
+            {
+
+                chunks[p.x, p.z] = new Chunk(p, this, true);
+                renderedChunks.Add(p);
+            }
+
+            chunks[p.x, p.z].mods.Enqueue(mod);
+
+            if (!chunksToUpdate.Contains(chunks[p.x, p.z]))
+            {
+                chunksToUpdate.Add(chunks[p.x, p.z]);
+            }
+
+            count++;
+            if (count > 250)
+            {
+
+                count = 0;
+                yield return null;
+            }
+        }
+
+        modsApplying = false;
     }
 
     ChunkPos GetChunkCoordFromPosition(Vector3 pos)
@@ -179,7 +270,7 @@ public class World : MonoBehaviour
             return 1;
 
         /*Basic terrain conditions*/
-        int terrainHeight = Mathf.FloorToInt(biome.terrainHeight * Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 0, biome.terrainScale)) + biome.groundHeight;
+        int terrainHeight = Mathf.FloorToInt(biome.terrainHeight * Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 2.5f, biome.terrainScale)) + biome.groundHeight;
         byte voxelValue = 0;
 
         if (yPos == terrainHeight)
@@ -191,18 +282,29 @@ public class World : MonoBehaviour
         else
             voxelValue = 2;
 
-        /* Second Pass for detail */
+        /* Second Pass for dirt and ores */
         if (voxelValue == 2)
         {
-
             foreach (Lode lode in biome.lodes)
             {
-
                 if (yPos > lode.minHeight && yPos < lode.maxHeight)
                     if (Noise.Get3DPerlin(pos, lode.noiseOffset, lode.scale, lode.threshold))
                         voxelValue = lode.blockID;
             }
         }
+
+        /* Third pass for trees */
+        if (yPos == terrainHeight)
+        {
+            if (Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 2.5f, biome.treeZoneScale) > biome.treeThreshhold)
+            {
+                if (Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 2.5f, biome.treePlacementScale) > biome.treePlacementThreshold)
+                {
+                    Structure.GenerateTree(pos, mods, biome.treeHeightMin, biome.treeHeightMax); 
+                }
+            }
+        }
+
         return voxelValue;
     }
 
@@ -258,4 +360,24 @@ public class BlockType
         }
     }
 
+}
+
+public class WorldVoxelMod
+{
+
+    public Vector3 position;
+    public byte id;
+
+    public WorldVoxelMod()
+    {
+        id = 0;
+        position = new Vector3();
+    }
+
+    public WorldVoxelMod(Vector3 _position, byte _id)
+    {
+
+        position = _position;
+        id = _id;
+    }
 }
