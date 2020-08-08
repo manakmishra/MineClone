@@ -91,6 +91,7 @@ public class Chunk {
         vertIndex = 0;
         vertices.Clear();
         triangles.Clear();
+        transparentTriangles.Clear();
         uvs.Clear();
     }
 
