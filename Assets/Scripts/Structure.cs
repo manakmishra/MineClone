@@ -5,8 +5,10 @@ using UnityEngine;
 public class Structure : MonoBehaviour
 {
     
-    public static void GenerateTree(Vector3 position, Queue<WorldVoxelMod> mods, int trunkheightMin, int trunkHeightMax)
+    public static Queue<WorldVoxelMod> GenerateTree(Vector3 position, int trunkheightMin, int trunkHeightMax)
     {
+
+        Queue<WorldVoxelMod> mods = new Queue<WorldVoxelMod>();
 
         int height = (int)(trunkHeightMax * Noise.Get2DPerlin(new Vector2(position.x, position.z), 225f, 3f));
         if (height < trunkheightMin)
@@ -26,5 +28,7 @@ public class Structure : MonoBehaviour
                 }
             }
         }
+
+        return mods;
     }
 }
