@@ -1435,12 +1435,12 @@ MonoBehaviour:
     isSolid: 1
     isTransparent: 0
     icon: {fileID: 6181873364862223445, guid: f218f6defd4c4564fa80cc63afbebe79, type: 3}
-    backFaceTexture: 9
-    frontFaceTexture: 9
-    topFaceTexture: 9
-    bottomFaceTexture: 9
-    leftFaceTexture: 9
-    rightFaceTexture: 9
+    backFaceTexture: 10
+    frontFaceTexture: 10
+    topFaceTexture: 10
+    bottomFaceTexture: 10
+    leftFaceTexture: 10
+    rightFaceTexture: 10
   - blockName: Stone
     isSolid: 1
     isTransparent: 0
@@ -1455,22 +1455,22 @@ MonoBehaviour:
     isSolid: 1
     isTransparent: 0
     icon: {fileID: 5392753449730437660, guid: f218f6defd4c4564fa80cc63afbebe79, type: 3}
-    backFaceTexture: 2
-    frontFaceTexture: 2
-    topFaceTexture: 7
-    bottomFaceTexture: 1
-    leftFaceTexture: 2
-    rightFaceTexture: 2
+    backFaceTexture: 3
+    frontFaceTexture: 3
+    topFaceTexture: 8
+    bottomFaceTexture: 2
+    leftFaceTexture: 3
+    rightFaceTexture: 3
   - blockName: Sand
     isSolid: 1
     isTransparent: 0
     icon: {fileID: -9138616440249935319, guid: f218f6defd4c4564fa80cc63afbebe79, type: 3}
-    backFaceTexture: 10
-    frontFaceTexture: 10
-    topFaceTexture: 10
-    bottomFaceTexture: 10
-    leftFaceTexture: 10
-    rightFaceTexture: 10
+    backFaceTexture: 11
+    frontFaceTexture: 11
+    topFaceTexture: 11
+    bottomFaceTexture: 11
+    leftFaceTexture: 11
+    rightFaceTexture: 11
   - blockName: Dirt
     isSolid: 1
     isTransparent: 0
@@ -1485,62 +1485,62 @@ MonoBehaviour:
     isSolid: 1
     isTransparent: 0
     icon: {fileID: 448961105294916356, guid: f218f6defd4c4564fa80cc63afbebe79, type: 3}
-    backFaceTexture: 5
-    frontFaceTexture: 5
-    topFaceTexture: 6
-    bottomFaceTexture: 6
-    leftFaceTexture: 5
-    rightFaceTexture: 5
+    backFaceTexture: 6
+    frontFaceTexture: 6
+    topFaceTexture: 7
+    bottomFaceTexture: 7
+    leftFaceTexture: 6
+    rightFaceTexture: 6
   - blockName: Plank
     isSolid: 1
     isTransparent: 0
     icon: {fileID: -1501523072523359806, guid: f218f6defd4c4564fa80cc63afbebe79, type: 3}
+    backFaceTexture: 5
+    frontFaceTexture: 5
+    topFaceTexture: 5
+    bottomFaceTexture: 5
+    leftFaceTexture: 5
+    rightFaceTexture: 5
+  - blockName: Brick
+    isSolid: 1
+    isTransparent: 0
+    icon: {fileID: -4219558403781695398, guid: f218f6defd4c4564fa80cc63afbebe79, type: 3}
+    backFaceTexture: 12
+    frontFaceTexture: 12
+    topFaceTexture: 12
+    bottomFaceTexture: 12
+    leftFaceTexture: 12
+    rightFaceTexture: 12
+  - blockName: Cobblestone
+    isSolid: 1
+    isTransparent: 0
+    icon: {fileID: 1159639000735656762, guid: f218f6defd4c4564fa80cc63afbebe79, type: 3}
+    backFaceTexture: 9
+    frontFaceTexture: 9
+    topFaceTexture: 9
+    bottomFaceTexture: 9
+    leftFaceTexture: 9
+    rightFaceTexture: 9
+  - blockName: Glass
+    isSolid: 1
+    isTransparent: 1
+    icon: {fileID: -7538633921802359561, guid: f218f6defd4c4564fa80cc63afbebe79, type: 3}
     backFaceTexture: 4
     frontFaceTexture: 4
     topFaceTexture: 4
     bottomFaceTexture: 4
     leftFaceTexture: 4
     rightFaceTexture: 4
-  - blockName: Brick
-    isSolid: 1
-    isTransparent: 0
-    icon: {fileID: -4219558403781695398, guid: f218f6defd4c4564fa80cc63afbebe79, type: 3}
-    backFaceTexture: 11
-    frontFaceTexture: 11
-    topFaceTexture: 11
-    bottomFaceTexture: 11
-    leftFaceTexture: 11
-    rightFaceTexture: 11
-  - blockName: Cobblestone
-    isSolid: 1
-    isTransparent: 0
-    icon: {fileID: 1159639000735656762, guid: f218f6defd4c4564fa80cc63afbebe79, type: 3}
-    backFaceTexture: 8
-    frontFaceTexture: 8
-    topFaceTexture: 8
-    bottomFaceTexture: 8
-    leftFaceTexture: 8
-    rightFaceTexture: 8
-  - blockName: Glass
-    isSolid: 1
-    isTransparent: 1
-    icon: {fileID: -7538633921802359561, guid: f218f6defd4c4564fa80cc63afbebe79, type: 3}
-    backFaceTexture: 3
-    frontFaceTexture: 3
-    topFaceTexture: 3
-    bottomFaceTexture: 3
-    leftFaceTexture: 3
-    rightFaceTexture: 3
   - blockName: Leaves
     isSolid: 1
     isTransparent: 1
-    icon: {fileID: -7538633921802359561, guid: f218f6defd4c4564fa80cc63afbebe79, type: 3}
-    backFaceTexture: 16
-    frontFaceTexture: 16
-    topFaceTexture: 16
-    bottomFaceTexture: 16
-    leftFaceTexture: 16
-    rightFaceTexture: 16
+    icon: {fileID: 0}
+    backFaceTexture: 17
+    frontFaceTexture: 17
+    topFaceTexture: 17
+    bottomFaceTexture: 17
+    leftFaceTexture: 17
+    rightFaceTexture: 17
   debug: {fileID: 1008883341}
 --- !u!4 &1020204948
 Transform:
