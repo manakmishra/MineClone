@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class World : MonoBehaviour
 {
@@ -28,6 +29,8 @@ public class World : MonoBehaviour
     bool modsApplying = false;
 
     Queue<Queue<WorldVoxelMod>> mods = new Queue<Queue<WorldVoxelMod>>();
+
+    private bool _uiActive = false;
 
     public GameObject debug;
 
@@ -279,6 +282,15 @@ public class World : MonoBehaviour
         }
 
         return voxelValue;
+    }
+
+    public bool uiActive
+    {
+        get { return _uiActive; }
+        set
+        {
+            _uiActive = value;
+        }
     }
 
     bool IsChunkInWorld(ChunkPos pos)

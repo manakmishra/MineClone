@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEditor;
 
 public class PlayerController : MonoBehaviour
 {
@@ -32,7 +33,7 @@ public class PlayerController : MonoBehaviour
     public float checkIncrement = 0.1f;
     public float reach = 8f;
 
-    public byte selectedBlockIndex = 1;
+    public Toolbar toolbar;
 
     private void Start()
     {
@@ -46,21 +47,31 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
 
-        CalculateVelocity();
+        if (!world.uiActive) { 
+            CalculateVelocity();
 
-        if (jumpRequest)
-            JumpAction();
+            if (jumpRequest)
+                JumpAction();
 
-        transform.Rotate(Vector3.up * mouseHorizontal * mouseSensitivity);
-        cam.Rotate(Vector3.right * -mouseVertical * mouseSensitivity);
-        transform.Translate(velocity, Space.World);
+            transform.Rotate(Vector3.up * mouseHorizontal * mouseSensitivity);
+            cam.Rotate(Vector3.right * -mouseVertical * mouseSensitivity);
+            transform.Translate(velocity, Space.World);
+        }
     }
 
     private void Update()
     {
 
-        GetPlayerInputs();
-        PlaceSelectedBlock();
+        if(Input.GetKeyDown(KeyCode.Tab))
+        {
+            world.uiActive = !world.uiActive;
+        }
+
+        if (!world.uiActive)
+        {
+            GetPlayerInputs();
+            PlaceSelectedBlock();
+        }
     }
 
     private void JumpAction()
@@ -119,7 +130,13 @@ public class PlayerController : MonoBehaviour
 
             //create and place new block
             if (Input.GetMouseButtonDown(1))
-                world.GetChunkFromPosition(placeBlock.position).EditVoxelData(placeBlock.position, selectedBlockIndex);
+            {
+                if (toolbar.slots[toolbar.slotIndex].HasItem)
+                {
+                    world.GetChunkFromPosition(placeBlock.position).EditVoxelData(placeBlock.position, toolbar.slots[toolbar.slotIndex].itemSlot.stack.id);
+                    toolbar.slots[toolbar.slotIndex].itemSlot.UpdateAmount(1);
+                }
+            }
         }
     }
 
