@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine; 
 
 public class World : MonoBehaviour
 {
@@ -34,6 +33,9 @@ public class World : MonoBehaviour
 
     public GameObject debug;
 
+    public GameObject inventoryWindow;
+    public GameObject cursorSlot;
+
     private void Start()
     {
 
@@ -41,6 +43,7 @@ public class World : MonoBehaviour
         spawnPosition = new Vector3((VoxelData.worldSizeInChunks * VoxelData.chunkWidth) / 2f, VoxelData.chunkHeight - 50f, (VoxelData.worldSizeInChunks * VoxelData.chunkWidth) / 2f);
         GenerateWorld();
         playerLastChunkPos = GetChunkCoordFromPosition(player.position);
+        inventoryWindow.SetActive(false);
     }
 
     private void Update()
@@ -290,6 +293,18 @@ public class World : MonoBehaviour
         set
         {
             _uiActive = value;
+            if (_uiActive)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                inventoryWindow.SetActive(true);
+                cursorSlot.SetActive(true);
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                inventoryWindow.SetActive(false);
+                cursorSlot.SetActive(false);
+            }
         }
     }
 
