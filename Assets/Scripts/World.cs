@@ -1,16 +1,20 @@
+<<<<<<< Updated upstream
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine; 
+=======
+﻿using System.Collections.Generic;
+using UnityEngine;
+using System.Threading;
+using System.IO;
+>>>>>>> Stashed changes
 
 public class World : MonoBehaviour
 {
 
-    [Header("WorldGen values")]
-    public int seed;
-    public BiomeAttributes biome;
+    public UserSettings settings;
 
-    [Header("Performance")]
-    public bool enableMultiThreading;
+    public BiomeAttributes biome;
 
     [Range(0f, 1f)]
     public float globalLightLevel;
@@ -48,11 +52,26 @@ public class World : MonoBehaviour
     private void Start()
     {
 
-        Random.InitState(seed);
+        //string settingsExport = JsonUtility.ToJson(settings);
+        //File.WriteAllText(Application.dataPath + "/game.cfg", settingsExport);
+
+        string settingsImport = File.ReadAllText(Application.dataPath + "/game.cfg");
+        settings = JsonUtility.FromJson<UserSettings>(settingsImport);
+
+        Random.InitState(settings.seed);
 
         Shader.SetGlobalFloat("MinGlobalLightLevel", VoxelData.minLightLevel);
         Shader.SetGlobalFloat("MaxGlobalLightLevel", VoxelData.maxLightLevel);
 
+<<<<<<< Updated upstream
+=======
+        if (settings.enableMultiThreading)
+        {
+            _chunkUpdateThread = new Thread(new ThreadStart(ThreadedUpdate));
+            _chunkUpdateThread.Start();
+        }
+
+>>>>>>> Stashed changes
         spawnPosition = new Vector3((VoxelData.worldSizeInChunks * VoxelData.chunkWidth) / 2f, VoxelData.chunkHeight - 50f, (VoxelData.worldSizeInChunks * VoxelData.chunkWidth) / 2f);
         GenerateWorld();
         playerLastChunkPos = GetChunkCoordFromPosition(player.position);
@@ -79,9 +98,16 @@ public class World : MonoBehaviour
         if (chunksToUpdate.Count > 0)
             UpdateChunks();
 
+<<<<<<< Updated upstream
         if(chunksToDraw.Count > 0)
             lock(chunksToDraw)
             {
+=======
+        if (!settings.enableMultiThreading)
+        {
+            if (!modsApplying)
+                ApplyModifications();
+>>>>>>> Stashed changes
 
                 if (chunksToDraw.Peek().IsEditable)
                     chunksToDraw.Dequeue().CreateMesh();
@@ -94,9 +120,9 @@ public class World : MonoBehaviour
     void GenerateWorld()
     {
 
-        for (int x = (VoxelData.worldSizeInChunks / 2) - VoxelData.viewDistanceInChunks; x < (VoxelData.worldSizeInChunks / 2) + VoxelData.viewDistanceInChunks; x++)
+        for (int x = (VoxelData.worldSizeInChunks / 2) - settings.viewDistanceInChunks; x < (VoxelData.worldSizeInChunks / 2) + settings.viewDistanceInChunks; x++)
         {
-            for (int z = (VoxelData.worldSizeInChunks / 2) - VoxelData.viewDistanceInChunks; z < (VoxelData.worldSizeInChunks / 2) + VoxelData.viewDistanceInChunks; z++)
+            for (int z = (VoxelData.worldSizeInChunks / 2) - settings.viewDistanceInChunks; z < (VoxelData.worldSizeInChunks / 2) + settings.viewDistanceInChunks; z++)
             {
                 chunks[x, z] = new Chunk(new ChunkPos(x, z), this, true);
                 renderedChunks.Add(new ChunkPos(x, z));
@@ -134,6 +160,27 @@ public class World : MonoBehaviour
         }
     }
 
+<<<<<<< Updated upstream
+=======
+    void ThreadedUpdate()
+    {
+        while(true)
+        {
+            if (!modsApplying)
+                ApplyModifications();
+
+            if (chunksToUpdate.Count > 0)
+                UpdateChunks();
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (settings.enableMultiThreading)
+            _chunkUpdateThread.Abort();
+    }
+
+>>>>>>> Stashed changes
     void ApplyModifications()
     {
 
@@ -190,9 +237,9 @@ public class World : MonoBehaviour
 
         List<ChunkPos> previouslyActiveChunks = new List<ChunkPos>(renderedChunks);
 
-        for (int x = pos.x - VoxelData.viewDistanceInChunks; x < pos.x + VoxelData.viewDistanceInChunks; x++)
+        for (int x = pos.x - settings.viewDistanceInChunks; x < pos.x + settings.viewDistanceInChunks; x++)
         {
-            for (int z = pos.z - VoxelData.viewDistanceInChunks; z < pos.z + VoxelData.viewDistanceInChunks; z++)
+            for (int z = pos.z - settings.viewDistanceInChunks; z < pos.z + settings.viewDistanceInChunks; z++)
             {
                 if (IsChunkInWorld(new ChunkPos(x, z)))
                 {
@@ -397,4 +444,22 @@ public class WorldVoxelMod
         position = _position;
         id = _id;
     }
+}
+
+[System.Serializable]
+public class UserSettings
+{
+    [Header("Game Data")]
+    public string version;
+
+    [Header("Performance")]
+    public bool enableMultiThreading;
+    public int viewDistanceInChunks;
+
+    [Header("Controls/Mouse")]
+    [Range(0.15f, 15f)]
+    public float mouseSensitivity;
+
+    [Header("Game Settings")]
+    public int seed;
 }

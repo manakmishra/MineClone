@@ -12,7 +12,6 @@ public class PlayerController : MonoBehaviour
     private Transform cam;
     private World world;
 
-    public float mouseSensitivity = 15f;
     public float walkSpeed = 3f;
     public float sprintSpeed = 5.5f;
     public float jumpForce = 5f;
@@ -53,8 +52,8 @@ public class PlayerController : MonoBehaviour
             if (jumpRequest)
                 JumpAction();
 
-            transform.Rotate(Vector3.up * mouseHorizontal * mouseSensitivity);
-            cam.Rotate(Vector3.right * -mouseVertical * mouseSensitivity);
+            transform.Rotate(Vector3.up * mouseHorizontal * world.settings.mouseSensitivity);
+            cam.Rotate(Vector3.right * -mouseVertical * world.settings. mouseSensitivity);
             transform.Translate(velocity, Space.World);
         }
     }
