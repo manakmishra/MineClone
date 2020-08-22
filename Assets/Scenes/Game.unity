@@ -1528,9 +1528,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12f234ebb548550478079990956af9d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seed: 65168135
+  settings:
+    version: 0.0.2b
+    seed: 6135641
+    enableMultiThreading: 1
+    viewDistanceInChunks: 5
+    mouseSensitivity: 3.5
   biome: {fileID: 11400000, guid: 46985967c61cc5c4bb388b4b699e6c1b, type: 2}
-  enableMultiThreading: 1
   globalLightLevel: 0.9
   day: {r: 0, g: 0.7355242, b: 1, a: 1}
   night: {r: 0, g: 0.13062419, b: 0.2830189, a: 1}
@@ -1734,7 +1738,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isGrounded: 0
   isSprinting: 0
-  mouseSensitivity: 5
   walkSpeed: 3
   sprintSpeed: 5.5
   jumpForce: 5

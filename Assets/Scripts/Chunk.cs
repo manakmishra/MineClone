@@ -254,14 +254,14 @@ public class Chunk {
         int y = Mathf.FloorToInt(pos.y);
         int z = Mathf.FloorToInt(pos.z);
 
-        byte blockID = voxelMap[x, y, z].id;
+        int blockID = voxelMap[x, y, z].id;
         //bool isTransparent = world.blockTypes[blockID].renderNeighbourFaces;
 
         for (int i=0; i<6; i++) {
 
             VoxelState neighbour = CheckVoxel(pos + VoxelData.adjFaceChecks[i]); 
 
-            if(neighbour != null && world.blockTypes[neighbour.id].renderNeighbourFaces) {
+            if(neighbour.id != -1 && world.blockTypes[neighbour.id].renderNeighbourFaces) {
 
                 vertices.Add(pos + VoxelData.voxelVert[VoxelData.voxelTriangles[i, 0]]);
                 vertices.Add(pos + VoxelData.voxelVert[VoxelData.voxelTriangles[i, 1]]);
@@ -373,22 +373,37 @@ public class ChunkPos {
     }
 }
 
-public class VoxelState
+/*public class VoxelState
 {
-
     public byte id;
     public float globalLightPercentage;
 
     public VoxelState()
     {
-
         id = 0;
         globalLightPercentage = 0f;
     }
 
     public VoxelState(byte _id)
     {
+        id = _id;
+        globalLightPercentage = 0f;
+    }
+}*/
 
+public struct VoxelState
+{
+    public int id;
+    public float globalLightPercentage;
+
+    /*public VoxelState()
+    {
+        id = 0;
+        globalLightPercentage = 0f;
+    }*/
+
+    public VoxelState(int _id)
+    {
         id = _id;
         globalLightPercentage = 0f;
     }

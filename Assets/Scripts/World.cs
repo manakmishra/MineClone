@@ -1,16 +1,13 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System.Threading;
+using System.IO;
 
 public class World : MonoBehaviour
 {
+    public UserSettings settings;
 
-    [Header("WorldGen values")]
-    public int seed;
     public BiomeAttributes biome;
-
-    [Header("Performance")]
-    public bool enableMultiThreading;
 
     [Range(0f, 1f)]
     public float globalLightLevel;
@@ -51,12 +48,18 @@ public class World : MonoBehaviour
     private void Start()
     {
 
-        Random.InitState(seed);
+        //string settingsExport = JsonUtility.ToJson(settings);
+        //File.WriteAllText(Application.dataPath + "/game.cfg", settingsExport);
+
+        string settingsImport = File.ReadAllText(Application.dataPath + "/game.cfg");
+        settings = JsonUtility.FromJson<UserSettings>(settingsImport);
+
+        Random.InitState(settings.seed);
 
         Shader.SetGlobalFloat("MinGlobalLightLevel", VoxelData.minLightLevel);
         Shader.SetGlobalFloat("MaxGlobalLightLevel", VoxelData.maxLightLevel);
 
-        if (enableMultiThreading)
+        if (settings.enableMultiThreading)
         {
             _chunkUpdateThread = new Thread(new ThreadStart(ThreadedUpdate));
             _chunkUpdateThread.Start();
@@ -89,7 +92,7 @@ public class World : MonoBehaviour
                 chunksToDraw.Dequeue().CreateMesh();
         }
 
-        if (!enableMultiThreading)
+        if (!settings.enableMultiThreading)
         {
             if (!modsApplying)
                 ApplyModifications();
@@ -105,9 +108,9 @@ public class World : MonoBehaviour
     void GenerateWorld()
     {
 
-        for (int x = (VoxelData.worldSizeInChunks / 2) - VoxelData.viewDistanceInChunks; x < (VoxelData.worldSizeInChunks / 2) + VoxelData.viewDistanceInChunks; x++)
+        for (int x = (VoxelData.worldSizeInChunks / 2) - settings.viewDistanceInChunks; x < (VoxelData.worldSizeInChunks / 2) + settings.viewDistanceInChunks; x++)
         {
-            for (int z = (VoxelData.worldSizeInChunks / 2) - VoxelData.viewDistanceInChunks; z < (VoxelData.worldSizeInChunks / 2) + VoxelData.viewDistanceInChunks; z++)
+            for (int z = (VoxelData.worldSizeInChunks / 2) - settings.viewDistanceInChunks; z < (VoxelData.worldSizeInChunks / 2) + settings.viewDistanceInChunks; z++)
             {
                 ChunkPos newChunk = new ChunkPos(x, z);
                 chunks[x, z] = new Chunk(newChunk, this);
@@ -164,7 +167,7 @@ public class World : MonoBehaviour
 
     private void OnDisable()
     {
-        if (enableMultiThreading)
+        if (settings.enableMultiThreading)
             _chunkUpdateThread.Abort();
     }
 
@@ -220,9 +223,9 @@ public class World : MonoBehaviour
         List<ChunkPos> previouslyActiveChunks = new List<ChunkPos>(activeChunks);
         activeChunks.Clear();
 
-        for (int x = pos.x - VoxelData.viewDistanceInChunks; x < pos.x + VoxelData.viewDistanceInChunks; x++)
+        for (int x = pos.x - settings.viewDistanceInChunks; x < pos.x + settings.viewDistanceInChunks; x++)
         {
-            for (int z = pos.z - VoxelData.viewDistanceInChunks; z < pos.z + VoxelData.viewDistanceInChunks; z++)
+            for (int z = pos.z - settings.viewDistanceInChunks; z < pos.z + settings.viewDistanceInChunks; z++)
             {
                 if (IsChunkInWorld(new ChunkPos(x, z)))
                 {
@@ -273,7 +276,7 @@ public class World : MonoBehaviour
         ChunkPos thisChunk = new ChunkPos(pos);
 
         if (!IsChunkInWorld(thisChunk) || pos.y < 0 || pos.y > VoxelData.chunkHeight)
-            return null;
+            return new VoxelState(-1);
 
         if (chunks[thisChunk.x, thisChunk.z] != null && chunks[thisChunk.x, thisChunk.z].IsEditable)
             return chunks[thisChunk.x, thisChunk.z].GetVoxelFromGlobalPosition(pos);
@@ -427,4 +430,22 @@ public class WorldVoxelMod
         position = _position;
         id = _id;
     }
+}
+
+[System.Serializable]
+public class UserSettings
+{
+    [Header("Game Data")]
+    public string version;
+
+    [Header("General Game Settings")]
+    public int seed;
+
+    [Header("Performance")]
+    public bool enableMultiThreading;
+    public int viewDistanceInChunks;
+
+    [Header("Controls")]
+    [Range(0.15f, 15f)]
+    public float mouseSensitivity;
 }
