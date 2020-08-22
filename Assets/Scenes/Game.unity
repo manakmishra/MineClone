@@ -1530,8 +1530,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   seed: 65168135
   biome: {fileID: 11400000, guid: 46985967c61cc5c4bb388b4b699e6c1b, type: 2}
-  enableMultiThreading: 0
-  globalLightLevel: 0.75
+  enableMultiThreading: 1
+  globalLightLevel: 0.9
   day: {r: 0, g: 0.7355242, b: 1, a: 1}
   night: {r: 0, g: 0.13062419, b: 0.2830189, a: 1}
   player: {fileID: 1047057876}
