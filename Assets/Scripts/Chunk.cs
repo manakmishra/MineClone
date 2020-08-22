@@ -16,6 +16,7 @@ public class Chunk {
     Material[] materials = new Material[2];
     List<Vector2> uvs = new List<Vector2>();
     List<Color> colors = new List<Color>();
+    List<Vector3> normals = new List<Vector3>(); 
 
     public Vector3 position;
 
@@ -42,9 +43,9 @@ public class Chunk {
         meshFilter = chunkObj.AddComponent<MeshFilter>();
         meshRenderer = chunkObj.AddComponent<MeshRenderer>();
 
-        //materials[0] = world.material;
-        //materials[1] = world.transparentMaterial;
-        meshRenderer.material = world.material;
+        materials[0] = world.material;
+        materials[1] = world.transparentMaterial;
+        meshRenderer.materials = materials;  
 
         chunkObj.transform.SetParent(world.transform);
         chunkObj.transform.position = new Vector3(pos.x * VoxelData.chunkWidth, 0f, pos.z * VoxelData.chunkWidth);
@@ -158,6 +159,7 @@ public class Chunk {
         transparentTriangles.Clear();
         uvs.Clear();
         colors.Clear();
+        normals.Clear();
     }
 
     public bool IsActive {
@@ -267,27 +269,28 @@ public class Chunk {
                 vertices.Add(pos + VoxelData.voxelVert[VoxelData.voxelTriangles[i, 1]]);
                 vertices.Add(pos + VoxelData.voxelVert[VoxelData.voxelTriangles[i, 2]]);
                 vertices.Add(pos + VoxelData.voxelVert[VoxelData.voxelTriangles[i, 3]]);
+
+                for (int j = 0; j < 4; j++)
+                    normals.Add(VoxelData.adjFaceChecks[i]);
                 
                 AddTexture(world.blockTypes[blockID].GetTextureID(i));
 
                 float lightLevel = neighbour.globalLightPercentage;
 
-                
-
                 colors.Add(new Color(0, 0, 0, lightLevel));
                 colors.Add(new Color(0, 0, 0, lightLevel));
                 colors.Add(new Color(0, 0, 0, lightLevel));
                 colors.Add(new Color(0, 0, 0, lightLevel));
 
-                //if (!isTransparent)
-                //{
-                triangles.Add(vertIndex);
+                if (!world.blockTypes[neighbour.id].renderNeighbourFaces)
+                {
+                    triangles.Add(vertIndex);
                     triangles.Add(vertIndex + 1);
                     triangles.Add(vertIndex + 2);
                     triangles.Add(vertIndex + 2);
                     triangles.Add(vertIndex + 1);
                     triangles.Add(vertIndex + 3);
-                /*} else
+                } else
                 {
                     transparentTriangles.Add(vertIndex);
                     transparentTriangles.Add(vertIndex + 1);
@@ -295,7 +298,7 @@ public class Chunk {
                     transparentTriangles.Add(vertIndex + 2);
                     transparentTriangles.Add(vertIndex + 1);
                     transparentTriangles.Add(vertIndex + 3);
-                }*/
+                }
                 vertIndex+=4;
             }
         }
@@ -306,15 +309,14 @@ public class Chunk {
         Mesh mesh = new Mesh();
         mesh.vertices = vertices.ToArray();
 
-        //mesh.subMeshCount = 2;
-        //mesh.SetTriangles(triangles.ToArray(), 0);
-        //mesh.SetTriangles(transparentTriangles.ToArray(), 1);
+        mesh.subMeshCount = 2;
+        mesh.SetTriangles(triangles.ToArray(), 0);
+        mesh.SetTriangles(transparentTriangles.ToArray(), 1);
 
-        mesh.triangles = triangles.ToArray();
+        //mesh.triangles = triangles.ToArray();
         mesh.uv = uvs.ToArray();
         mesh.colors = colors.ToArray();
-
-        mesh.RecalculateNormals();
+        mesh.normals = normals.ToArray();
 
         meshFilter.mesh = mesh;
     }
@@ -373,34 +375,10 @@ public class ChunkPos {
     }
 }
 
-/*public class VoxelState
-{
-    public byte id;
-    public float globalLightPercentage;
-
-    public VoxelState()
-    {
-        id = 0;
-        globalLightPercentage = 0f;
-    }
-
-    public VoxelState(byte _id)
-    {
-        id = _id;
-        globalLightPercentage = 0f;
-    }
-}*/
-
 public struct VoxelState
 {
     public int id;
     public float globalLightPercentage;
-
-    /*public VoxelState()
-    {
-        id = 0;
-        globalLightPercentage = 0f;
-    }*/
 
     public VoxelState(int _id)
     {

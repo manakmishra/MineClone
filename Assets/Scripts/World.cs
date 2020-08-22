@@ -65,19 +65,16 @@ public class World : MonoBehaviour
             _chunkUpdateThread.Start();
         }
 
+        SetGlobalLightValue();
         spawnPosition = new Vector3((VoxelData.worldSizeInChunks * VoxelData.chunkWidth) / 2f, VoxelData.chunkHeight - 50f, (VoxelData.worldSizeInChunks * VoxelData.chunkWidth) / 2f);
         GenerateWorld();
-        playerLastChunkPos = GetChunkCoordFromPosition(player.position);
-        inventoryWindow.SetActive(false);
+        playerLastChunkPos = GetChunkCoordFromPosition(player.position); 
     }
 
     private void Update()
     {
 
         playerChunkPos = GetChunkCoordFromPosition(player.position);
-
-        Shader.SetGlobalFloat("GlobalLightLevel", globalLightLevel);
-        Camera.main.backgroundColor = Color.Lerp(night, day, globalLightLevel);
 
         if (!playerChunkPos.Equals(playerLastChunkPos))
             CheckViewDistance();
@@ -122,6 +119,12 @@ public class World : MonoBehaviour
         CheckViewDistance();
     }
 
+    public void SetGlobalLightValue()
+    {
+        Shader.SetGlobalFloat("GlobalLightLevel", globalLightLevel);
+        Camera.main.backgroundColor = Color.Lerp(night, day, globalLightLevel);
+    }
+
     void CreateChunk()
     {
 
@@ -144,7 +147,10 @@ public class World : MonoBehaviour
                 if (chunksToUpdate[index].IsEditable)
                 {
                     chunksToUpdate[index].UpdateChunk();
-                    activeChunks.Add(chunksToUpdate[index].pos);
+
+                    if(!activeChunks.Contains(chunksToUpdate[index].pos))
+                        activeChunks.Add(chunksToUpdate[index].pos);
+
                     chunksToUpdate.RemoveAt(index);
                     updated = true;
                 }
@@ -227,26 +233,29 @@ public class World : MonoBehaviour
         {
             for (int z = pos.z - settings.viewDistanceInChunks; z < pos.z + settings.viewDistanceInChunks; z++)
             {
-                if (IsChunkInWorld(new ChunkPos(x, z)))
+
+                ChunkPos thisChunkPos = new ChunkPos(x, z);
+
+                if (IsChunkInWorld(thisChunkPos))
                 {
 
                     if (chunks[x, z] == null)
                     {
-                        chunks[x, z] = new Chunk(new ChunkPos(x, z), this);
-                        chunksToBeCreated.Add(new ChunkPos(x, z));
+                        chunks[x, z] = new Chunk(thisChunkPos, this);
+                        chunksToBeCreated.Add(thisChunkPos);
                     }
                     else if (!chunks[x, z].IsActive)
                     {
                         chunks[x, z].IsActive = true;
                     }
-                    activeChunks.Add(new ChunkPos(x, z));
+                    activeChunks.Add(thisChunkPos);
 
                 }
 
                 for (int i = 0; i < previouslyActiveChunks.Count; i++)
                 {
 
-                    if (previouslyActiveChunks[i].Equals(new ChunkPos(x, z)))
+                    if (previouslyActiveChunks[i].Equals(thisChunkPos))
                         previouslyActiveChunks.RemoveAt(i);
                 }
             }
@@ -345,12 +354,14 @@ public class World : MonoBehaviour
             if (_uiActive)
             {
                 Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
                 inventoryWindow.SetActive(true);
                 cursorSlot.SetActive(true);
             }
             else
             {
                 Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
                 inventoryWindow.SetActive(false);
                 cursorSlot.SetActive(false);
             }

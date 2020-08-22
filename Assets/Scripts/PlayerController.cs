@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour
         cam = GameObject.Find("Main Camera").transform;
         world = GameObject.Find("World").GetComponent<World>();
 
-        Cursor.lockState = CursorLockMode.Locked;
+        world.uiActive = false;
     }
 
     private void FixedUpdate()
@@ -112,6 +112,9 @@ public class PlayerController : MonoBehaviour
         vertical = Input.GetAxis("Vertical");
         mouseHorizontal = Input.GetAxis("Mouse X");
         mouseVertical = Input.GetAxis("Mouse Y");
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+            Application.Quit();
 
         if (Input.GetButtonDown("Sprint"))
             isSprinting = true;
