@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using System.Threading;
+using System.Collections.Concurrent;
 
 public class Chunk {
 
@@ -27,12 +29,17 @@ public class Chunk {
 
     private bool _isActive;
     private bool isVoxelMapPopulated = false;
+    public bool locked = false;
 
-    public Chunk(ChunkPos _pos, World _world) {
+    public Chunk(ChunkPos _pos, World _world, bool generateOnLoad) {
 
         //references
         pos = _pos;
         world = _world;
+        IsActive = true;
+
+        if (generateOnLoad)
+            Init();
     }
 
     public void Init()
@@ -51,7 +58,15 @@ public class Chunk {
         chunkObj.name = "Chunk " + pos.x + ", " + pos.z;
         position = chunkObj.transform.position;
 
-        InitVoxelMap();
+        if (world.enableMultiThreading)
+        {
+            Thread InitVoxelMapThread = new Thread(new ThreadStart(InitVoxelMap));
+            InitVoxelMapThread.Start();
+        } else
+        {
+
+            InitVoxelMap();
+        }
     }
 
     void InitVoxelMap() {
@@ -64,14 +79,26 @@ public class Chunk {
             }
         }
 
+        _updateChunk();
         isVoxelMapPopulated = true;
-        
-        lock(world._updateThreadLock)
-            world.chunksToUpdate.Add(this);
     }
 
-    public void UpdateChunk() 
+    public void UpdateChunk()
     {
+
+        if (world.enableMultiThreading)
+        {
+            Thread updateChunkThread = new Thread(new ThreadStart(_updateChunk));
+            updateChunkThread.Start();
+        } else
+        {
+            _updateChunk();
+        }
+    }
+
+    private void _updateChunk() {
+
+        locked = true;
 
         while(mods.Count > 0)
         {
@@ -96,7 +123,12 @@ public class Chunk {
             }
         }
 
-        world.chunksToDraw.Enqueue(this);
+        lock (world.chunksToDraw)
+        {
+            world.chunksToDraw.Enqueue(this);
+        }
+
+        locked = false;
     }
 
     void CalculateLightValues()
@@ -174,7 +206,7 @@ public class Chunk {
     {
         get
         {
-            if (!isVoxelMapPopulated)
+            if (!isVoxelMapPopulated || locked)
                 return false;
             else return true;
         }
@@ -199,11 +231,9 @@ public class Chunk {
 
         voxelMap[checkX, checkY, checkZ].id = newID;
 
-        lock (world._updateThreadLock)
-        {
-            world.chunksToUpdate.Insert(0, this);
-            UpdateSurroundingVoxels(checkX, checkY, checkZ);
-        }
+        UpdateSurroundingVoxels(checkX, checkY, checkZ);
+
+        _updateChunk();
     }
 
     void UpdateSurroundingVoxels(int x, int y, int z)
@@ -216,7 +246,7 @@ public class Chunk {
             Vector3 currentVoxel = thisVoxel + VoxelData.adjFaceChecks[i];
             if(!IsVoxelInChunk((int)currentVoxel.x, (int)currentVoxel.y, (int)currentVoxel.z)) {
 
-                world.chunksToUpdate.Insert(0, world.GetChunkFromPosition(currentVoxel + position));
+                world.GetChunkFromPosition(currentVoxel + position).UpdateChunk();
             }
         }
     }
