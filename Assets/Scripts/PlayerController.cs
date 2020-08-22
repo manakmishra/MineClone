@@ -52,10 +52,14 @@ public class PlayerController : MonoBehaviour
             if (jumpRequest)
                 JumpAction();
 
-            transform.Rotate(Vector3.up * mouseHorizontal * world.settings.mouseSensitivity);
-            cam.Rotate(Vector3.right * -mouseVertical * world.settings.mouseSensitivity);
             transform.Translate(velocity, Space.World);
         }
+    }
+
+    private void MouseMovement()
+    {
+        transform.Rotate(Vector3.up * mouseHorizontal * world.settings.mouseSensitivity * Time.fixedDeltaTime);
+        cam.Rotate(Vector3.right * -mouseVertical * world.settings.mouseSensitivity * Time.fixedDeltaTime);
     }
 
     private void Update()
@@ -71,6 +75,8 @@ public class PlayerController : MonoBehaviour
             GetPlayerInputs();
             PlaceSelectedBlock();
         }
+
+        MouseMovement();
     }
 
     private void JumpAction()

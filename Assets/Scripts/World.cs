@@ -457,6 +457,6 @@ public class UserSettings
     public int viewDistanceInChunks;
 
     [Header("Controls")]
-    [Range(0.15f, 15f)]
+    [Range(0.15f, 20f)]
     public float mouseSensitivity;
 }
