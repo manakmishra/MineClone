@@ -1528,19 +1528,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12f234ebb548550478079990956af9d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  settings:
-    version: 0.0.1b
-    enableMultiThreading: 1
-    viewDistanceInChunks: 5
-    mouseSensitivity: 2
-    seed: 35161351
+  seed: 65168135
   biome: {fileID: 11400000, guid: 46985967c61cc5c4bb388b4b699e6c1b, type: 2}
-<<<<<<< Updated upstream
-  enableMultiThreading: 0
-  globalLightLevel: 0.75
-=======
+  enableMultiThreading: 1
   globalLightLevel: 0.9
->>>>>>> Stashed changes
   day: {r: 0, g: 0.7355242, b: 1, a: 1}
   night: {r: 0, g: 0.13062419, b: 0.2830189, a: 1}
   player: {fileID: 1047057876}
@@ -1743,6 +1734,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isGrounded: 0
   isSprinting: 0
+  mouseSensitivity: 5
   walkSpeed: 3
   sprintSpeed: 5.5
   jumpForce: 5
