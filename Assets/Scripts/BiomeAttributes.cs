@@ -6,22 +6,29 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "BiomeAttributes", menuName = "MineCraftClone/BiomeAttributes")]
 public class BiomeAttributes : ScriptableObject {
     
+    [Header("General Biome Values")]
     public string biomeName;
+    public float offset;
+    public float scale;
 
-    public int groundHeight;
     public int terrainHeight;
     public float terrainScale;
 
-    [Header("Trees")]
-    public float treeZoneScale = 1.3f;
-    [Range(0.1f, 1f)]
-    public float treeThreshhold = 0.7f;
-    public float treePlacementScale = 30f;
-    [Range(0.1f, 1f)]
-    public float treePlacementThreshold = 0.8f;
+    public byte surfaceBlock;
+    public byte subSurfaceBlock;
 
-    public int treeHeightMax = 12;
-    public int treeHeightMin = 4;
+    [Header("Flora")]
+    public int floraIndex;
+    public float floraZoneScale = 1.3f;
+    [Range(0.1f, 1f)]
+    public float floraThreshhold = 0.7f;
+    public float floraPlacementScale = 30f;
+    [Range(0.1f, 1f)]
+    public float floraPlacementThreshold = 0.8f;
+    public bool placeFlora = true;
+
+    public int HeightMax = 12;
+    public int HeightMin = 4;
 
     public Lode[] lodes;
 }

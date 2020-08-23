@@ -29,9 +29,10 @@ public class DebugScreen : MonoBehaviour
 
         string debugMessage = frameRate + "fps\n";
         debugMessage += "XYZ: " + (Mathf.FloorToInt(world.player.transform.position.x)-halfWorldSizeInVoxels) + "," + Mathf.FloorToInt(world.player.transform.position.y) + "," + (Mathf.FloorToInt(world.player.transform.position.z)-halfWorldSizeInVoxels) + "\n";
-        debugMessage += "Chunk: " + (world.playerChunkPos.x - halfWorldSizeInChunks) + "," + (world.playerChunkPos.z - halfWorldSizeInChunks);
+        debugMessage += "Chunk: " + (world.playerChunkPos.x - halfWorldSizeInChunks) + "," + (world.playerChunkPos.z - halfWorldSizeInChunks) + "\n";
+        //debugMessage += "Biome:" + 
 
-        debugText.SetText(debugMessage, true);
+        debugText.SetText(debugMessage);
 
         if (timer > 1f)
         {

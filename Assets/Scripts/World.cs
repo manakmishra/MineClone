@@ -7,7 +7,7 @@ public class World : MonoBehaviour
 {
     public UserSettings settings;
 
-    public BiomeAttributes biome;
+    public BiomeAttributes[] biomes;
 
     [Range(0f, 1f)]
     public float globalLightLevel;
@@ -306,14 +306,48 @@ public class World : MonoBehaviour
         if (yPos == 0)
             return 1;
 
+        //BIOME SELECTION PASS
+        int groundHeight = 42;
+        float sumOfHeights = 0f;
+        int count = 0;
+        float strongestWeight = 0f;
+        int strongestBiomeIndex = 0;
+
+        for (int i=0; i < biomes.Length; i++)
+        {
+            float weight = Noise.Get2DPerlin(new Vector2(pos.x, pos.z), biomes[i].offset, biomes[i].scale);
+
+            if(weight > strongestWeight)
+            {
+                strongestWeight = weight;
+                strongestBiomeIndex = i;
+            }
+
+            //getting the height of the terrain
+            float height = biomes[i].terrainHeight * Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 2.5f, biomes[i].terrainScale) * weight;
+
+            if(height > 0)
+            {
+                sumOfHeights += height;
+                count++;
+            }
+        }
+
+        //Set biome to one with strongest weight
+        BiomeAttributes biome = biomes[strongestBiomeIndex];
+
+        //Getting AVG of heights and the final terrain height
+        sumOfHeights /= count;
+        int terrainHeight = Mathf.FloorToInt(sumOfHeights + groundHeight);
+
+
         /*Basic terrain conditions*/
-        int terrainHeight = Mathf.FloorToInt(biome.terrainHeight * Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 2.5f, biome.terrainScale)) + biome.groundHeight;
         byte voxelValue = 0;
 
         if (yPos == terrainHeight)
-            voxelValue = 3;
+            voxelValue = biome.surfaceBlock;
         else if (yPos < terrainHeight && yPos > terrainHeight - 4)
-            voxelValue = 5;
+            voxelValue = biome.subSurfaceBlock;
         else if (yPos > terrainHeight)
             return 0;
         else
@@ -331,13 +365,13 @@ public class World : MonoBehaviour
         }
 
         /* Third pass for trees */
-        if (yPos == terrainHeight)
+        if (yPos == terrainHeight && biome.placeFlora)
         {
-            if (Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 2.5f, biome.treeZoneScale) > biome.treeThreshhold)
+            if (Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 2.5f, biome.floraZoneScale) > biome.floraThreshhold)
             {
-                if (Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 2.5f, biome.treePlacementScale) > biome.treePlacementThreshold)
+                if (Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 2.5f, biome.floraPlacementScale) > biome.floraPlacementThreshold)
                 {
-                    mods.Enqueue(Structure.GenerateTree(pos, biome.treeHeightMin, biome.treeHeightMax)); 
+                    mods.Enqueue(Structure.GenerateFlora(biome.floraIndex, pos, biome.HeightMin, biome.HeightMax)); 
                 }
             }
         }
