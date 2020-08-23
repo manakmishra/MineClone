@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80612b16c263c2a43bb72550049a3b7f, type: 3}
   m_Name: Forest
   m_EditorClassIdentifier: 
-  biomeName: Grassland
+  biomeName: Forest
   offset: 84611
   scale: 0.156
   terrainHeight: 80
   terrainScale: 0.3
   surfaceBlock: 5
   subSurfaceBlock: 5
-  floraIndex: 2
+  floraIndex: 0
   floraZoneScale: 1.3
   floraThreshhold: 0.4
   floraPlacementScale: 5
