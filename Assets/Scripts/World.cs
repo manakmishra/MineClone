@@ -48,13 +48,9 @@ public class World : MonoBehaviour
     private void Start()
     {
 
-        //string settingsExport = JsonUtility.ToJson(settings);
-        //File.WriteAllText(Application.dataPath + "/game.cfg", settingsExport);
+        Debug.Log("generating new world using seed: " + VoxelData.seed);
 
-        string settingsImport = File.ReadAllText(Application.dataPath + "/game.cfg");
-        settings = JsonUtility.FromJson<UserSettings>(settingsImport);
-
-        Random.InitState(settings.seed);
+        Random.InitState(VoxelData.seed);
 
         Shader.SetGlobalFloat("MinGlobalLightLevel", VoxelData.minLightLevel);
         Shader.SetGlobalFloat("MaxGlobalLightLevel", VoxelData.maxLightLevel);
@@ -481,17 +477,14 @@ public class WorldVoxelMod
 public class UserSettings
 {
     [Header("Game Data")]
-    public string version;
-
-    [Header("General Game Settings")]
-    public int seed;
+    public string version = "0.1b";
 
     [Header("Performance")]
-    public bool enableMultiThreading;
-    public bool enableAnimatedChunkLoading;
-    public int viewDistanceInChunks;
+    public bool enableMultiThreading = true;
+    public bool enableAnimatedChunkLoading = false;
+    public int viewDistanceInChunks = 8;
 
     [Header("Controls")]
     [Range(0.15f, 20f)]
-    public float mouseSensitivity;
+    public float mouseSensitivity = 16.25f;
 }

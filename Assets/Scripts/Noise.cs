@@ -7,14 +7,17 @@ public static class Noise
     
     public static float Get2DPerlin (Vector2 position, float offset, float scale) {
 
-        return Mathf.PerlinNoise((position.x + 0.1f) / VoxelData.chunkWidth * scale + offset, (position.y + 0.1f) / VoxelData.chunkWidth * scale + offset); 
+        position.x += (offset + VoxelData.seed + 0.1f);
+        position.y += (offset + VoxelData.seed + 0.1f);
+
+        return Mathf.PerlinNoise(position.x / VoxelData.chunkWidth * scale, position.y / VoxelData.chunkWidth * scale); 
     }
 
     public static bool Get3DPerlin (Vector3 position, float offset, float scale, float threshold) {
 
-        float x = (position.x + 0.1f + offset) * scale;
-        float y = (position.y + 0.1f + offset) * scale;
-        float z = (position.z + 0.1f + offset) * scale;
+        float x = (position.x + 0.1f + VoxelData.seed + offset) * scale;
+        float y = (position.y + 0.1f + VoxelData.seed + offset) * scale;
+        float z = (position.z + 0.1f + VoxelData.seed + offset) * scale;
 
         float AB = Mathf.PerlinNoise(x, y);
         float BC = Mathf.PerlinNoise(y, z);
