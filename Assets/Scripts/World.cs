@@ -454,6 +454,7 @@ public class UserSettings
 
     [Header("Performance")]
     public bool enableMultiThreading;
+    public bool enableAnimatedChunkLoading;
     public int viewDistanceInChunks;
 
     [Header("Controls")]

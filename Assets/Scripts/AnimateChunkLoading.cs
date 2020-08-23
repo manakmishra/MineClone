@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AnimateChunkLoading : MonoBehaviour
 {
-    float animationSpeed = 3.5f;
+    float animationSpeed = 5f;
     Vector3 finalPos;
 
     float waitTimer;
@@ -12,7 +12,7 @@ public class AnimateChunkLoading : MonoBehaviour
 
     private void Start()
     {
-        waitTimer = Random.Range(0f, 3f);
+        waitTimer = Random.Range(0f, 2f);
         finalPos = transform.position;
         transform.position = new Vector3(transform.position.x, -VoxelData.chunkHeight, transform.position.z);
     }

@@ -1504,6 +1504,7 @@ MonoBehaviour:
     version: 0.0.2b
     seed: 6135641
     enableMultiThreading: 1
+    enableAnimatedChunkLoading: 1
     viewDistanceInChunks: 5
     mouseSensitivity: 3.5
   biome: {fileID: 11400000, guid: 46985967c61cc5c4bb388b4b699e6c1b, type: 2}
