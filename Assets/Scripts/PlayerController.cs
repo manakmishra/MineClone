@@ -58,8 +58,8 @@ public class PlayerController : MonoBehaviour
 
     private void MouseMovement()
     {
-        transform.Rotate(Vector3.up * mouseHorizontal * world.settings.mouseSensitivity * Time.fixedDeltaTime);
-        cam.Rotate(Vector3.right * -mouseVertical * world.settings.mouseSensitivity * Time.fixedDeltaTime);
+        transform.Rotate(Vector3.up * mouseHorizontal * world.settings.mouseSensitivity * Time.fixedDeltaTime * 10f);
+        cam.Rotate(Vector3.right * -mouseVertical * world.settings.mouseSensitivity * Time.fixedDeltaTime * 10f);
     }
 
     private void Update()
