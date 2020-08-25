@@ -614,6 +614,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cloudHeight: 100
+  cloudDepth: 4
   noisemap: {fileID: 2800000, guid: f56015b45885a52419104e9325e75dd1, type: 3}
   material: {fileID: 2100000, guid: e40837c74256c334a92f06d5b9bf8246, type: 2}
   world: {fileID: 1020204947}
@@ -1550,8 +1551,9 @@ MonoBehaviour:
   settings:
     version: 0.0.2b
     enableMultiThreading: 1
-    enableAnimatedChunkLoading: 1
+    enableAnimatedChunkLoading: 0
     viewDistanceInChunks: 5
+    clouds: 2
     mouseSensitivity: 3.5
   biomes:
   - {fileID: 11400000, guid: 46985967c61cc5c4bb388b4b699e6c1b, type: 2}

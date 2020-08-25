@@ -281,7 +281,7 @@ public class World : MonoBehaviour
         ChunkPos thisChunk = new ChunkPos(pos);
 
         if (!IsChunkInWorld(thisChunk) || pos.y < 0 || pos.y > VoxelData.chunkHeight)
-            return new VoxelState(-1);
+            return null;
 
         if (chunks[thisChunk.x, thisChunk.z] != null && chunks[thisChunk.x, thisChunk.z].IsEditable)
             return chunks[thisChunk.x, thisChunk.z].GetVoxelFromGlobalPosition(pos);

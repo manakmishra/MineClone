@@ -70,7 +70,7 @@ public class Chunk {
         lock(world._updateThreadLock)
             world.chunksToUpdate.Add(this);
 
-        if(!world.settings.enableAnimatedChunkLoading)
+        if(world.settings.enableAnimatedChunkLoading)
             chunkObj.AddComponent<AnimateChunkLoading>();
     }
 
@@ -266,7 +266,7 @@ public class Chunk {
 
             VoxelState neighbour = CheckVoxel(pos + VoxelData.adjFaceChecks[i]); 
 
-            if(neighbour.id != -1 && world.blockTypes[neighbour.id].renderNeighbourFaces) {
+            if(neighbour != null && world.blockTypes[neighbour.id].renderNeighbourFaces) {
 
                 vertices.Add(pos + VoxelData.voxelVert[VoxelData.voxelTriangles[i, 0]]);
                 vertices.Add(pos + VoxelData.voxelVert[VoxelData.voxelTriangles[i, 1]]);
@@ -378,10 +378,16 @@ public class ChunkPos {
     }
 }
 
-public struct VoxelState
+public class VoxelState
 {
     public int id;
     public float globalLightPercentage;
+
+    public VoxelState()
+    {
+        id = 0;
+        globalLightPercentage = 0f;
+    }
 
     public VoxelState(int _id)
     {

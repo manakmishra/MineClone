@@ -72,11 +72,10 @@ public class PlayerController : MonoBehaviour
 
         if (!world.uiActive)
         {
+            MouseMovement();
             GetPlayerInputs();
             PlaceSelectedBlock();
         }
-
-        MouseMovement();
     }
 
     private void JumpAction()
