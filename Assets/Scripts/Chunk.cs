@@ -70,7 +70,7 @@ public class Chunk {
         lock(world._updateThreadLock)
             world.chunksToUpdate.Add(this);
 
-        if(world.settings.enableAnimatedChunkLoading)
+        if(!world.settings.enableAnimatedChunkLoading)
             chunkObj.AddComponent<AnimateChunkLoading>();
     }
 

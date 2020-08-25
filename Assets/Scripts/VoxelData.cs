@@ -45,14 +45,14 @@ public static class VoxelData
         new Vector3(0.0f, 1.0f, 1.0f),
     };
 
-    public static readonly Vector3[] adjFaceChecks = new Vector3[6] {
+    public static readonly Vector3Int[] adjFaceChecks = new Vector3Int[6] {
 
-        new Vector3(0.0f, 0.0f, -1.0f), //backFace
-        new Vector3(0.0f, 0.0f, 1.0f), //frontFace
-        new Vector3(0.0f, 1.0f, 0.0f), //topFace
-        new Vector3(0.0f, -1.0f, 0.0f), //bottomFace
-        new Vector3(-1.0f, 0.0f, 0.0f), //leftFace
-        new Vector3(1.0f, 0.0f, 0.0f), //rightFace
+        new Vector3Int(0, 0, -1), //backFace
+        new Vector3Int(0, 0, 1), //frontFace
+        new Vector3Int(0, 1, 0), //topFace
+        new Vector3Int(0, -1, 0), //bottomFace
+        new Vector3Int(-1, 0, 0), //leftFace
+        new Vector3Int(1, 0, 0), //rightFace
     };
 
     public static readonly int[,] voxelTriangles = new int[6, 4] {

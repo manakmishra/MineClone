@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System.Threading;
-using System.IO;
 
 public class World : MonoBehaviour
 {
@@ -484,6 +483,7 @@ public class UserSettings
     public bool enableMultiThreading = true;
     public bool enableAnimatedChunkLoading = false;
     public int viewDistanceInChunks = 8;
+    public CloudStyle clouds = CloudStyle._2D;
 
     [Header("Controls")]
     [Range(0.15f, 20f)]

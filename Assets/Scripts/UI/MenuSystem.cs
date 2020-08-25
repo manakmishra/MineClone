@@ -23,6 +23,7 @@ public class MenuSystem : MonoBehaviour
     public Toggle threadingToggle;
     public Toggle animatedChunkToggle;
     public TextMeshProUGUI version;
+    public TMP_Dropdown clouds;
 
     UserSettings settings;
 
@@ -40,8 +41,8 @@ public class MenuSystem : MonoBehaviour
             string settingsImport = File.ReadAllText(Application.dataPath + "/game.cfg");
             settings = JsonUtility.FromJson<UserSettings>(settingsImport);
         }
-        version.text = "Build version: \n" + settings.version;
-    }
+        version.text = "Build version: \n" + settings.version; 
+    } 
 
     public void StartGame()
     {
@@ -60,6 +61,8 @@ public class MenuSystem : MonoBehaviour
         threadingToggle.isOn = settings.enableMultiThreading;
         animatedChunkToggle.isOn = settings.enableAnimatedChunkLoading;
 
+        clouds.value = (int)settings.clouds;
+
         mainMenuObject.SetActive(false);
         optionsMenuObject.SetActive(true);
     }
@@ -70,6 +73,7 @@ public class MenuSystem : MonoBehaviour
         settings.mouseSensitivity = mouseSensitivity.value;
         settings.enableAnimatedChunkLoading = animatedChunkToggle.isOn;
         settings.enableMultiThreading = threadingToggle.isOn;
+        settings.clouds = (CloudStyle)clouds.value;
 
         string settingsExport = JsonUtility.ToJson(settings);
         File.WriteAllText(Application.dataPath + "/game.cfg", settingsExport);
