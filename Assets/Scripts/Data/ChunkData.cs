@@ -45,6 +45,8 @@ public class ChunkData
                 }
             }
         }
+        Lighting.RecalculateNaturalLight(this);
+
         World.Instance.worldData.AddModifiedChunk(this);
     }
 }

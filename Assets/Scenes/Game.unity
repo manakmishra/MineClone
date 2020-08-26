@@ -1550,10 +1550,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settings:
     version: 0.01b
-    loadDistance: 4
     enableMultiThreading: 1
     enableAnimatedChunkLoading: 0
     viewDistanceInChunks: 2
+    loadDistance: 4
     clouds: 2
     mouseSensitivity: 3.5
   biomes:
@@ -1571,7 +1571,7 @@ MonoBehaviour:
   - blockName: Air
     isSolid: 0
     renderNeighbourFaces: 1
-    transparency: 1
+    opacity: 0
     icon: {fileID: 0}
     backFaceTexture: 0
     frontFaceTexture: 0
@@ -1582,7 +1582,7 @@ MonoBehaviour:
   - blockName: Bedrock
     isSolid: 1
     renderNeighbourFaces: 0
-    transparency: 0
+    opacity: 15
     icon: {fileID: 6181873364862223445, guid: f218f6defd4c4564fa80cc63afbebe79, type: 3}
     backFaceTexture: 10
     frontFaceTexture: 10
@@ -1593,7 +1593,7 @@ MonoBehaviour:
   - blockName: Stone
     isSolid: 1
     renderNeighbourFaces: 0
-    transparency: 0
+    opacity: 15
     icon: {fileID: 5679390536090785944, guid: f218f6defd4c4564fa80cc63afbebe79, type: 3}
     backFaceTexture: 0
     frontFaceTexture: 0
@@ -1604,7 +1604,7 @@ MonoBehaviour:
   - blockName: Grass
     isSolid: 1
     renderNeighbourFaces: 0
-    transparency: 0
+    opacity: 15
     icon: {fileID: 5392753449730437660, guid: f218f6defd4c4564fa80cc63afbebe79, type: 3}
     backFaceTexture: 3
     frontFaceTexture: 3
@@ -1615,7 +1615,7 @@ MonoBehaviour:
   - blockName: Sand
     isSolid: 1
     renderNeighbourFaces: 0
-    transparency: 0
+    opacity: 15
     icon: {fileID: -9138616440249935319, guid: f218f6defd4c4564fa80cc63afbebe79, type: 3}
     backFaceTexture: 11
     frontFaceTexture: 11
@@ -1626,7 +1626,7 @@ MonoBehaviour:
   - blockName: Dirt
     isSolid: 1
     renderNeighbourFaces: 0
-    transparency: 0
+    opacity: 15
     icon: {fileID: -6943373833598557, guid: f218f6defd4c4564fa80cc63afbebe79, type: 3}
     backFaceTexture: 1
     frontFaceTexture: 1
@@ -1637,7 +1637,7 @@ MonoBehaviour:
   - blockName: Wood
     isSolid: 1
     renderNeighbourFaces: 0
-    transparency: 0
+    opacity: 15
     icon: {fileID: 448961105294916356, guid: f218f6defd4c4564fa80cc63afbebe79, type: 3}
     backFaceTexture: 6
     frontFaceTexture: 6
@@ -1648,7 +1648,7 @@ MonoBehaviour:
   - blockName: Plank
     isSolid: 1
     renderNeighbourFaces: 0
-    transparency: 0
+    opacity: 15
     icon: {fileID: -1501523072523359806, guid: f218f6defd4c4564fa80cc63afbebe79, type: 3}
     backFaceTexture: 5
     frontFaceTexture: 5
@@ -1659,7 +1659,7 @@ MonoBehaviour:
   - blockName: Brick
     isSolid: 1
     renderNeighbourFaces: 0
-    transparency: 0
+    opacity: 15
     icon: {fileID: -4219558403781695398, guid: f218f6defd4c4564fa80cc63afbebe79, type: 3}
     backFaceTexture: 12
     frontFaceTexture: 12
@@ -1670,7 +1670,7 @@ MonoBehaviour:
   - blockName: Cobblestone
     isSolid: 1
     renderNeighbourFaces: 0
-    transparency: 0
+    opacity: 15
     icon: {fileID: 1159639000735656762, guid: f218f6defd4c4564fa80cc63afbebe79, type: 3}
     backFaceTexture: 9
     frontFaceTexture: 9
@@ -1681,7 +1681,7 @@ MonoBehaviour:
   - blockName: Glass
     isSolid: 1
     renderNeighbourFaces: 1
-    transparency: 0.95
+    opacity: 0
     icon: {fileID: -7538633921802359561, guid: f218f6defd4c4564fa80cc63afbebe79, type: 3}
     backFaceTexture: 4
     frontFaceTexture: 4
@@ -1692,7 +1692,7 @@ MonoBehaviour:
   - blockName: Leaves
     isSolid: 1
     renderNeighbourFaces: 1
-    transparency: 0.75
+    opacity: 5
     icon: {fileID: 0}
     backFaceTexture: 17
     frontFaceTexture: 17
@@ -1703,7 +1703,7 @@ MonoBehaviour:
   - blockName: Cactus
     isSolid: 1
     renderNeighbourFaces: 1
-    transparency: 0
+    opacity: 15
     icon: {fileID: 0}
     backFaceTexture: 19
     frontFaceTexture: 19
@@ -1714,7 +1714,7 @@ MonoBehaviour:
   - blockName: Cactus Top
     isSolid: 1
     renderNeighbourFaces: 1
-    transparency: 0
+    opacity: 15
     icon: {fileID: 0}
     backFaceTexture: 19
     frontFaceTexture: 19
@@ -1726,6 +1726,7 @@ MonoBehaviour:
   clouds: {fileID: 284462519}
   inventoryWindow: {fileID: 381104591}
   cursorSlot: {fileID: 1730040217}
+  appPath: 
   worldData:
     worldName: Prototype
     seed: 0
