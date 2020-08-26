@@ -5,6 +5,7 @@ using System.Threading;
 public class World : MonoBehaviour
 {
     public UserSettings settings;
+    //public string worldName = "foobar";
 
     public BiomeAttributes[] biomes;
 
@@ -43,11 +44,30 @@ public class World : MonoBehaviour
 
     Thread _chunkUpdateThread;
     public object _updateThreadLock = new object();
+    public object _listThreadLock = new object();
+
+    public string appPath;
+
+    public WorldData worldData;
+
+    private static World _instance;
+    public static World Instance { get { return _instance; } }
+
+    private void Awake()
+    {
+        if (_instance != null && _instance != this)
+            Destroy(this.gameObject);
+        else
+            _instance = this;
+
+        appPath = Application.persistentDataPath;
+    }
 
     private void Start()
     {
-
         Debug.Log("generating new world using seed: " + VoxelData.seed);
+
+        worldData = WorldSaveSystem.LoadWorld(WorldSaveSystem.name, VoxelData.seed);
 
         Random.InitState(VoxelData.seed);
 
@@ -78,11 +98,7 @@ public class World : MonoBehaviour
             CreateChunk();
 
         if (chunksToDraw.Count > 0)
-        {
-
-            if (chunksToDraw.Peek().IsEditable)
-                chunksToDraw.Dequeue().CreateMesh();
-        }
+            chunksToDraw.Dequeue().CreateMesh();
 
         if (!settings.enableMultiThreading)
         {
@@ -95,6 +111,21 @@ public class World : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.F3))
             debug.SetActive(!debug.activeSelf);
+
+        if (Input.GetKeyDown(KeyCode.F1))
+            WorldSaveSystem.SaveWorld(worldData);
+    }
+
+    void LoadWorld()
+    {
+
+        for (int x = (VoxelData.worldSizeInChunks / 2) - settings.loadDistance; x < (VoxelData.worldSizeInChunks / 2) + settings.loadDistance; x++)
+        {
+            for (int z = (VoxelData.worldSizeInChunks / 2) - settings.loadDistance; z < (VoxelData.worldSizeInChunks / 2) + settings.loadDistance; z++)
+            {
+                worldData.LoadChunk(new Vector2Int(x, z));
+            }
+        }
     }
 
     void GenerateWorld()
@@ -105,7 +136,7 @@ public class World : MonoBehaviour
             for (int z = (VoxelData.worldSizeInChunks / 2) - settings.viewDistanceInChunks; z < (VoxelData.worldSizeInChunks / 2) + settings.viewDistanceInChunks; z++)
             {
                 ChunkPos newChunk = new ChunkPos(x, z);
-                chunks[x, z] = new Chunk(newChunk, this);
+                chunks[x, z] = new Chunk(newChunk);
                 chunksToBeCreated.Add(newChunk);
             }
         }
@@ -130,27 +161,14 @@ public class World : MonoBehaviour
 
     void UpdateChunks()
     {
-
-        bool updated = false;
-        int index = 0;
-
         lock (_updateThreadLock)
         {
-            while (!updated && index < chunksToUpdate.Count - 1)
-            {
+            chunksToUpdate[0].UpdateChunk();
 
-                if (chunksToUpdate[index].IsEditable)
-                {
-                    chunksToUpdate[index].UpdateChunk();
+            if (!activeChunks.Contains(chunksToUpdate[0].pos))
+                activeChunks.Add(chunksToUpdate[0].pos);
 
-                    if(!activeChunks.Contains(chunksToUpdate[index].pos))
-                        activeChunks.Add(chunksToUpdate[index].pos);
-
-                    chunksToUpdate.RemoveAt(index);
-                    updated = true;
-                }
-                else index++;
-            }
+            chunksToUpdate.RemoveAt(0);
         }
     }
 
@@ -184,16 +202,9 @@ public class World : MonoBehaviour
 
             while (queue.Count > 0)
             {
-                WorldVoxelMod mod = queue.Dequeue(); 
-                ChunkPos p = GetChunkCoordFromPosition(mod.position);
+                WorldVoxelMod mod = queue.Dequeue();
 
-                if (chunks[p.x, p.z] == null)
-                {
-                    chunks[p.x, p.z] = new Chunk(p, this);
-                    chunksToBeCreated.Add(p);
-                }
-
-                chunks[p.x, p.z].mods.Enqueue(mod);
+                worldData.SetVoxel(mod.position, mod.id);
             }
         }
         modsApplying = false;
@@ -237,7 +248,7 @@ public class World : MonoBehaviour
 
                     if (chunks[x, z] == null)
                     {
-                        chunks[x, z] = new Chunk(thisChunkPos, this);
+                        chunks[x, z] = new Chunk(thisChunkPos);
                         chunksToBeCreated.Add(thisChunkPos);
                     }
                     else if (!chunks[x, z].IsActive)
@@ -263,30 +274,16 @@ public class World : MonoBehaviour
 
     public bool CheckVoxelCollider(Vector3 pos)
     {
+        VoxelState voxel = worldData.GetVoxel(pos);
 
-        ChunkPos thisChunk = new ChunkPos(pos);
-
-        if (!IsChunkInWorld(thisChunk) || pos.y < 0 || pos.y > VoxelData.chunkHeight)
-            return false;
-
-        if (chunks[thisChunk.x, thisChunk.z] != null && chunks[thisChunk.x, thisChunk.z].IsEditable)
-            return blockTypes[chunks[thisChunk.x, thisChunk.z].GetVoxelFromGlobalPosition(pos).id].isSolid;
-
-        return blockTypes[GetVoxel(pos)].isSolid;
+        if (blockTypes[voxel.id].isSolid)
+            return true;
+        else return false;
     }
 
     public VoxelState GetVoxelState(Vector3 pos)
     {
-
-        ChunkPos thisChunk = new ChunkPos(pos);
-
-        if (!IsChunkInWorld(thisChunk) || pos.y < 0 || pos.y > VoxelData.chunkHeight)
-            return null;
-
-        if (chunks[thisChunk.x, thisChunk.z] != null && chunks[thisChunk.x, thisChunk.z].IsEditable)
-            return chunks[thisChunk.x, thisChunk.z].GetVoxelFromGlobalPosition(pos);
-
-        return new VoxelState(GetVoxel(pos));
+        return worldData.GetVoxel(pos);
     }
 
     public byte GetVoxel(Vector3 pos)
@@ -483,6 +480,7 @@ public class UserSettings
     public bool enableMultiThreading = true;
     public bool enableAnimatedChunkLoading = false;
     public int viewDistanceInChunks = 8;
+    public int loadDistance = 16;
     public CloudStyle clouds = CloudStyle._2D;
 
     [Header("Controls")]

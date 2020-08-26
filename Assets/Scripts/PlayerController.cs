@@ -119,7 +119,10 @@ public class PlayerController : MonoBehaviour
         mouseVertical = Input.GetAxis("Mouse Y");
 
         if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            WorldSaveSystem.SaveWorld(World.Instance.worldData);
             Application.Quit();
+        }
 
         if (Input.GetButtonDown("Sprint"))
             isSprinting = true;

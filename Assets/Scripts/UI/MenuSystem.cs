@@ -47,6 +47,7 @@ public class MenuSystem : MonoBehaviour
     public void StartGame()
     {
         VoxelData.seed = Mathf.Abs(seedField.text.GetHashCode()) / VoxelData.worldSizeInChunks;
+        WorldSaveSystem.name = seedField.text;
         SceneManager.LoadScene("Game", LoadSceneMode.Single);
     }
 
@@ -84,6 +85,7 @@ public class MenuSystem : MonoBehaviour
 
     public void QuitGame()
     {
+        WorldSaveSystem.SaveWorld(World.Instance.worldData);
         Application.Quit();
     }
 

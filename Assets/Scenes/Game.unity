@@ -1549,10 +1549,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings:
-    version: 0.0.2b
+    version: 0.01b
+    loadDistance: 4
     enableMultiThreading: 1
     enableAnimatedChunkLoading: 0
-    viewDistanceInChunks: 5
+    viewDistanceInChunks: 2
     clouds: 2
     mouseSensitivity: 3.5
   biomes:
@@ -1725,6 +1726,9 @@ MonoBehaviour:
   clouds: {fileID: 284462519}
   inventoryWindow: {fileID: 381104591}
   cursorSlot: {fileID: 1730040217}
+  worldData:
+    worldName: Prototype
+    seed: 0
 --- !u!4 &1020204948
 Transform:
   m_ObjectHideFlags: 0
