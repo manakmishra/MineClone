@@ -139,7 +139,7 @@ public class World : MonoBehaviour
 
     public void AddChunkToUpdate(Chunk chunk, bool insert = false)
     {
-        lock(_chunkUpdateThread)
+        lock(_updateThreadLock)
         {
             if(!chunksToUpdate.Contains(chunk))
             {

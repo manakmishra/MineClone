@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public static class Lighting
+﻿public static class Lighting
 {
     public static void RecalculateNaturalLight(ChunkData chunk)
     {
@@ -10,7 +6,7 @@ public static class Lighting
         {
             for(int j =0; j<VoxelData.chunkWidth; j++)
             {
-                NaturalLight(chunk, x, z, VoxelData.chunkHeight - 1);
+                NaturalLight(chunk, i, j, VoxelData.chunkHeight - 1);
             }
         }
     }

@@ -59,6 +59,8 @@ public static class VoxelData
         new Vector3Int(1, 0, 0), //rightFace
     };
 
+    public static readonly int[] revfaceCheckIndex = new int[6] { 1, 0, 3, 2, 5, 4 };
+
     public static readonly int[,] voxelTriangles = new int[6, 4] {
 
         {0, 3, 1, 2}, //backFace
