@@ -72,14 +72,6 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 
 
-<!-- CONTACT -->
-## Contact
-
-Manak Mishra - manakmishra14@gmail.com
-Project Link: [https://github.com/manakmishra/MineClone](https://github.com/manakmishra/MineClone)
-
-
-
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
 
