@@ -40,7 +40,7 @@ See the bottom of this document for the declaration of the reference variables f
 <!-- Add website link later -->
 <!--[![Product Name Screen Shot][product-screenshot]](https://example.com)-->
 
-Minecraft is one of the most popular games for many years now. It has popularized the use of voxels and infnite procedural world generation. After seeing some of the similar games and prototypes, I thought it would be fun to recreate Minecraft in Unity. Since I was just starting out in Game Development when I first started this project it helped me learn more about Unity and scripting in C#. **This project is still in progress.**
+Minecraft is one of the most popular games for many years now. It has popularized the use of voxels and infinite procedural world generation. After seeing some of the similar games and prototypes, I thought it would be fun to recreate Minecraft in Unity. Since I was just starting out in Game Development when I first started this project it helped me learn more about Unity and scripting in C#. **This project is still in progress.**
 
 
 <!--Features-->
