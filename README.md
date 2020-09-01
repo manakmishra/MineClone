@@ -86,7 +86,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 [issues-shield]: https://img.shields.io/github/issues/manakmishra/MineClone
 [issues-url]: https://github.com/manakmishra/MineClone/issues 
 [license-shield]: https://img.shields.io/github/license/manakmishra/MineClone.svg?style=flat-square
-[license-url]: https://github.com/manakmishra/MineClone/blob/master/LICENSE.txt
+[license-url]: https://github.com/manakmishra/MineClone/blob/master/LICENSE
 [github-link]: https://github.com/manakmishra
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/manakmishra
