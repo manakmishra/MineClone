@@ -51,7 +51,7 @@ Minecraft is one of the most popular games for many years now. It has popularize
 * Randomized Caves
 * 2D and 3D clouds using reference noise map
 * Simple inventory system
-* Diffuse lighting similar to original game. Because of this I did not use the standard lighting system in Unity)
+* Diffuse lighting similar to original game. (Because of this I did not use the standard lighting system in Unity)
 * Added a in-Engine texture atlas packer tool 
 
 **NOTE:** After implementing cross-chunk diffuse lighting, game is not working as expected. I'm currently working to resolve this issue.
